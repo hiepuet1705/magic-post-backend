@@ -1,8 +1,11 @@
 package com.MagicPost.example.BackendMagicPost.controller;
 
+import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.payload.JwtAuthResponse;
 import com.MagicPost.example.BackendMagicPost.payload.LoginDto;
-import com.MagicPost.example.BackendMagicPost.payload.RegisterDto;
+
+
+import com.MagicPost.example.BackendMagicPost.payload.StaffTranRegisterDto;
 import com.MagicPost.example.BackendMagicPost.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +37,16 @@ public class AuthController {
 
     // DTO = data transfer object => controller ~~ service
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto){
+    public ResponseEntity<String> register(@RequestBody CustomerRegisterDto registerDto){
         String response = authService.register(registerDto);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
 
     }
+    @PostMapping("/register/staff")
+    public ResponseEntity<String> createAccountForStaffTran(@RequestBody StaffTranRegisterDto staffTranRegisterDto){
+        String response = authService.createAccountForStaffTran(staffTranRegisterDto);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
 
 }

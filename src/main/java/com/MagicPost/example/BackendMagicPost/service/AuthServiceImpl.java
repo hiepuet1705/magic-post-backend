@@ -1,13 +1,22 @@
 package com.MagicPost.example.BackendMagicPost.service;
 
+import com.MagicPost.example.BackendMagicPost.entity.Customer;
 import com.MagicPost.example.BackendMagicPost.entity.Role;
+
+import com.MagicPost.example.BackendMagicPost.entity.StaffTransaction;
 import com.MagicPost.example.BackendMagicPost.entity.User;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
+import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.payload.LoginDto;
-import com.MagicPost.example.BackendMagicPost.payload.RegisterDto;
+
+
+import com.MagicPost.example.BackendMagicPost.payload.StaffTranRegisterDto;
+import com.MagicPost.example.BackendMagicPost.repository.CustomerRepository;
 import com.MagicPost.example.BackendMagicPost.repository.RoleRepository;
 import com.MagicPost.example.BackendMagicPost.repository.UserRepository;
 import com.MagicPost.example.BackendMagicPost.security.JwtTokenProvider;
+import com.MagicPost.example.BackendMagicPost.utils.Constant;
+import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,12 +33,15 @@ public class AuthServiceImpl implements AuthService {
     //private AuthenticationManager
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+
+    private CustomerRepository customerRepository;
     private AuthenticationManager authenticationManager;
     private PasswordEncoder passwordEncoder;
 
     private JwtTokenProvider jwtTokenProvider;
 
     public AuthServiceImpl(UserRepository userRepository,
+                           CustomerRepository customerRepository,
                            RoleRepository roleRepository,
                            AuthenticationManager authenticationManager,
                            PasswordEncoder passwordEncoder,
@@ -39,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.customerRepository = customerRepository;
     }
 
     //
@@ -57,25 +70,58 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String register(RegisterDto registerDto) {
+    public String  register(CustomerRegisterDto registerDto) {
 
         if (userRepository.existsByUsername(registerDto.getUsername())) {
             throw new CustomApiException(HttpStatus.BAD_REQUEST, "Username is already exists");
         }
 
         // map
+//        User user = new User();
+//        user.setUsername(registerDto.getUsername());
+//        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+//        Set<Role> roles = new HashSet<>();
+//        Role userRole = roleRepository.findByName(Constant.roleCustomer).get();
+//        roles.add(userRole);
+//        user.setRoles(roles);
+        Customer customer = new Customer();
+        customer.setAddress(registerDto.getAddress());
+        customer.setFirstName(registerDto.getFirstName());
+        customer.setLastName(registerDto.getLastName());
+        customer.setPhoneNumber(registerDto.getPhoneNumber());
         User user = new User();
-        user.setName(registerDto.getName());
         user.setUsername(registerDto.getUsername());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName("ROLE_USER").get();
+        Role userRole = roleRepository.findByName(Constant.roleCustomer).get();
         roles.add(userRole);
         user.setRoles(roles);
+        customer.setUser(user);
 
-        userRepository.save(user);
+
+        customerRepository.save(customer);
         return "User register successfully";
+    }
+
+
+    @Override
+    public String createAccountForStaffTran(StaffTranRegisterDto staffRegisterDto) {
+
+        StaffTransaction staffTransaction = new StaffTransaction();
+        staffTransaction.setName(staffRegisterDto.getName());
+        User userStaff = new User();
+        userStaff.setUsername(staffRegisterDto.getUsername());
+        userStaff.setPassword(passwordEncoder.encode(staffRegisterDto.getPassword()));
+        Set<Role> roles = new HashSet<>();
+        Role userRole = roleRepository.findByName(Constant.roleStaffTran).get();
+        roles.add(userRole);
+        userStaff.setRoles(roles);
+        staffTransaction.setUser(userStaff);
+
+        return "staff trans create successfully";
+
 
     }
+
 }
 
