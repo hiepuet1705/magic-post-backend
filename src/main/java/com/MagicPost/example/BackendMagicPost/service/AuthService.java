@@ -11,4 +11,5 @@ public interface AuthService {
     String register(CustomerRegisterDto registerDto);
 
     String createAccountForStaffTran(StaffTranRegisterDto staffRegisterDto);
+    String createAccountForStaffCol(StaffTranRegisterDto staffRegisterDto);
 }

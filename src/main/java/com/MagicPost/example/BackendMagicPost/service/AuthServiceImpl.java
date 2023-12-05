@@ -1,19 +1,14 @@
 package com.MagicPost.example.BackendMagicPost.service;
 
-import com.MagicPost.example.BackendMagicPost.entity.Customer;
-import com.MagicPost.example.BackendMagicPost.entity.Role;
+import com.MagicPost.example.BackendMagicPost.entity.*;
 
-import com.MagicPost.example.BackendMagicPost.entity.StaffTransaction;
-import com.MagicPost.example.BackendMagicPost.entity.User;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
 import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.payload.LoginDto;
 
 
 import com.MagicPost.example.BackendMagicPost.payload.StaffTranRegisterDto;
-import com.MagicPost.example.BackendMagicPost.repository.CustomerRepository;
-import com.MagicPost.example.BackendMagicPost.repository.RoleRepository;
-import com.MagicPost.example.BackendMagicPost.repository.UserRepository;
+import com.MagicPost.example.BackendMagicPost.repository.*;
 import com.MagicPost.example.BackendMagicPost.security.JwtTokenProvider;
 import com.MagicPost.example.BackendMagicPost.utils.Constant;
 import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
@@ -39,19 +34,26 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder passwordEncoder;
 
     private JwtTokenProvider jwtTokenProvider;
+    private StaffTransactionRepository staffTransactionRepository;
+
+    private StaffCollectionRepository staffCollectionRepository;
 
     public AuthServiceImpl(UserRepository userRepository,
                            CustomerRepository customerRepository,
                            RoleRepository roleRepository,
                            AuthenticationManager authenticationManager,
                            PasswordEncoder passwordEncoder,
-                           JwtTokenProvider jwtTokenProvider) {
+                           JwtTokenProvider jwtTokenProvider,
+                           StaffTransactionRepository staffTransactionRepository,
+                           StaffCollectionRepository staffCollectionRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.customerRepository = customerRepository;
+        this.staffTransactionRepository = staffTransactionRepository;
+        this.staffCollectionRepository = staffCollectionRepository;
     }
 
     //
@@ -117,10 +119,28 @@ public class AuthServiceImpl implements AuthService {
         roles.add(userRole);
         userStaff.setRoles(roles);
         staffTransaction.setUser(userStaff);
+        staffTransactionRepository.save(staffTransaction);
 
         return "staff trans create successfully";
 
 
+    }
+
+    @Override
+    public String createAccountForStaffCol(StaffTranRegisterDto staffRegisterDto) {
+        StaffCollection staffCollection = new StaffCollection();
+        staffCollection.setName(staffRegisterDto.getName());
+        User userStaff = new User();
+        userStaff.setUsername(staffRegisterDto.getUsername());
+        userStaff.setPassword(passwordEncoder.encode(staffRegisterDto.getPassword()));
+        Set<Role> roles = new HashSet<>();
+        Role userRole = roleRepository.findByName(Constant.roleStaffCol).get();
+        roles.add(userRole);
+        userStaff.setRoles(roles);
+        staffCollection.setUser(userStaff);
+        staffCollectionRepository.save(staffCollection);
+
+        return "staff trans create successfully";
     }
 
 }
