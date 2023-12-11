@@ -1,5 +1,6 @@
 package com.MagicPost.example.BackendMagicPost.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,10 @@ public class StaffTransaction {
 
     private String name;
 
+    private String phoneNumber;
+
+    private Boolean isManager;
+
 
 
 
@@ -27,10 +32,10 @@ public class StaffTransaction {
     @JoinColumn(name = "user_id")
     private User user;
 
-
-//    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-//    @JoinColumn(name = "point_id")
-//    private TransactionPoint transactionPoint;
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "point_id")
+    private TransactionPoint transactionPoint;
 
 
 

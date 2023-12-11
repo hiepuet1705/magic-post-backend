@@ -23,8 +23,8 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse>login(@RequestBody LoginDto loginDto){
+    @PostMapping("/signin")
+    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto){
         //
         String token = authService.login(loginDto);
 
