@@ -1,12 +1,15 @@
 package com.MagicPost.example.BackendMagicPost.service;
 
 import com.MagicPost.example.BackendMagicPost.entity.CollectionPoint;
+import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.entity.StaffTransaction;
 import com.MagicPost.example.BackendMagicPost.entity.TransactionPoint;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
 import com.MagicPost.example.BackendMagicPost.repository.CollectionPointRepository;
+import com.MagicPost.example.BackendMagicPost.repository.PackageRepository;
 import com.MagicPost.example.BackendMagicPost.repository.StaffTransactionRepository;
 import com.MagicPost.example.BackendMagicPost.repository.TransactionPointRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +22,17 @@ public class BossServiceImp implements BossService{
 
     private StaffTransactionRepository staffTransactionRepository;
 
+    private PackageRepository packageRepository;
+
+    @Autowired
     public BossServiceImp(CollectionPointRepository collectionPointRepository,
                           TransactionPointRepository transactionPointRepository,
-                          StaffTransactionRepository staffTransactionRepository) {
+                          StaffTransactionRepository staffTransactionRepository,
+                          PackageRepository packageRepository) {
         this.collectionPointRepository = collectionPointRepository;
         this.transactionPointRepository = transactionPointRepository;
         this.staffTransactionRepository = staffTransactionRepository;
+        this.packageRepository = packageRepository;
     }
 
     @Override
@@ -45,6 +53,15 @@ public class BossServiceImp implements BossService{
                         "Transaction Point not found"));
         StaffTransaction manager = staffTransactionRepository.getStaffByIsManager(tranId);
         return manager;
+    }
+
+    @Override
+    public List<Package> getPackagesInATransactionPoint(Long tranId) {
+        TransactionPoint transactionPoint =transactionPointRepository.findById(tranId).
+                orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,
+                        "Transaction Point not found"));
+        List<Package> packages = packageRepository.getPackagesInTransactionPoint(tranId);
+        return packages;
     }
 
 

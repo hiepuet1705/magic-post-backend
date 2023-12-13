@@ -1,6 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.controller;
 
 import com.MagicPost.example.BackendMagicPost.entity.CollectionPoint;
+import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.entity.StaffTransaction;
 import com.MagicPost.example.BackendMagicPost.entity.TransactionPoint;
 import com.MagicPost.example.BackendMagicPost.service.BossService;
@@ -40,6 +41,14 @@ public class BossController {
 
         StaffTransaction manager =  bossService.getManagerOfSTranPoint(tranPointId);
         return new ResponseEntity<>(manager,HttpStatus.OK);
+    }
+
+    @GetMapping("/tran-point/{id}/packages")
+    @PreAuthorize("hasRole('BOSS')")
+    public ResponseEntity<List<Package>> getPackagesFromATranPoint(@PathVariable("id") Long tranPointId ){
+
+        List<Package> packages = bossService.getPackagesInATransactionPoint(tranPointId);
+        return new ResponseEntity<>(packages,HttpStatus.OK);
     }
 
 }
