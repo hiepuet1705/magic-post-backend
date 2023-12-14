@@ -1,14 +1,9 @@
 package com.MagicPost.example.BackendMagicPost.service;
 
-import com.MagicPost.example.BackendMagicPost.entity.CollectionPoint;
+import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
-import com.MagicPost.example.BackendMagicPost.entity.StaffTransaction;
-import com.MagicPost.example.BackendMagicPost.entity.TransactionPoint;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
-import com.MagicPost.example.BackendMagicPost.repository.CollectionPointRepository;
-import com.MagicPost.example.BackendMagicPost.repository.PackageRepository;
-import com.MagicPost.example.BackendMagicPost.repository.StaffTransactionRepository;
-import com.MagicPost.example.BackendMagicPost.repository.TransactionPointRepository;
+import com.MagicPost.example.BackendMagicPost.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +16,7 @@ public class BossServiceImp implements BossService{
     private TransactionPointRepository transactionPointRepository;
 
     private StaffTransactionRepository staffTransactionRepository;
+    private StaffCollectionRepository staffCollectionRepository;
 
     private PackageRepository packageRepository;
 
@@ -28,10 +24,12 @@ public class BossServiceImp implements BossService{
     public BossServiceImp(CollectionPointRepository collectionPointRepository,
                           TransactionPointRepository transactionPointRepository,
                           StaffTransactionRepository staffTransactionRepository,
+                          StaffCollectionRepository staffCollectionRepository,
                           PackageRepository packageRepository) {
         this.collectionPointRepository = collectionPointRepository;
         this.transactionPointRepository = transactionPointRepository;
         this.staffTransactionRepository = staffTransactionRepository;
+        this.staffCollectionRepository = staffCollectionRepository;
         this.packageRepository = packageRepository;
     }
 
@@ -47,11 +45,20 @@ public class BossServiceImp implements BossService{
     }
 
     @Override
-    public StaffTransaction getManagerOfSTranPoint(Long tranId) {
+    public StaffTransaction getManagerOfATranPoint(Long tranId) {
         TransactionPoint transactionPoint =transactionPointRepository.findById(tranId).
                 orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,
                         "Transaction Point not found"));
         StaffTransaction manager = staffTransactionRepository.getStaffByIsManager(tranId);
+        return manager;
+    }
+
+    @Override
+    public StaffCollection getManagerOfAColPoint(Long tranId) {
+        CollectionPoint collectionPoint =collectionPointRepository.findById(tranId).
+                orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,
+                        "Collection Point not found"));
+        StaffCollection manager = staffCollectionRepository.getStaffByIsManager(tranId);
         return manager;
     }
 
@@ -61,6 +68,15 @@ public class BossServiceImp implements BossService{
                 orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,
                         "Transaction Point not found"));
         List<Package> packages = packageRepository.getPackagesInTransactionPoint(tranId);
+        return packages;
+    }
+
+    @Override
+    public List<Package> getPackagesInACollectionPoint(Long colId) {
+        CollectionPoint collectionPoint =collectionPointRepository.findById(colId).
+                orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,
+                        "Collection Point not found"));
+        List<Package> packages = packageRepository.getPackagesInCollectionPoint(colId);
         return packages;
     }
 

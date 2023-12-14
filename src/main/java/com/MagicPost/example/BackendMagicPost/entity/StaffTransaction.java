@@ -22,7 +22,7 @@ public class StaffTransaction {
 
     private String phoneNumber;
 
-    private Boolean isManager;
+    private Boolean isManager = false;
 
 
 
