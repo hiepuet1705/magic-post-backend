@@ -18,7 +18,8 @@ public class Package {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int weight;
-
+    private String name;
+    private String description;
     private String receiverFirstName;
     private String receiverLastName;
     private String receiverAddress;

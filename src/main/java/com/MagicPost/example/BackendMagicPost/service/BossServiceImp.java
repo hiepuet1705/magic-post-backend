@@ -73,7 +73,7 @@ public class BossServiceImp implements BossService{
 
     @Override
     public List<Package> getPackagesInACollectionPoint(Long colId) {
-        CollectionPoint collectionPoint =collectionPointRepository.findById(colId).
+        CollectionPoint collectionPoint = collectionPointRepository.findById(colId).
                 orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,
                         "Collection Point not found"));
         List<Package> packages = packageRepository.getPackagesInCollectionPoint(colId);

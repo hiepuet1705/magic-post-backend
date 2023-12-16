@@ -16,6 +16,5 @@ public interface PackageRepository extends JpaRepository<Package,Long> {
     @Query("SELECT p FROM Package p JOIN FETCH p.sender WHERE p.collectionPoint = :colId")
     public List<Package> getPackagesInCollectionPoint(@Param("colId") Long colId);
 
-    public Package getPackageByDeReceiptTCId(Long deReceiptTCId);
 
 }
