@@ -1,6 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.controller;
 
 import com.MagicPost.example.BackendMagicPost.entity.CustomerReceipt;
+import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptTC;
 import com.MagicPost.example.BackendMagicPost.service.StaffTranService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,18 @@ public class StaffTranController {
                                                                  @RequestBody CustomerReceipt customerReceipt) {
             CustomerReceipt responseCustomerReceipt =  staffTranService.createCustomerReceipt(CustomerId,customerReceipt);
             return new ResponseEntity<>(responseCustomerReceipt, HttpStatus.OK);
+    }
+
+    @PostMapping("/receipt-tc/{colId}/{packageId}/{tranId}")
+    @PreAuthorize("hasRole('OFFICERTRAN')")
+    public ResponseEntity<DeliveryReceiptTC> createDeliveryReceiptTC(@RequestBody DeliveryReceiptTC deliveryReceiptDto,
+                                                                     @PathVariable("colId") Long collectionId,
+                                                                     @PathVariable("packageId") Long packageId,
+                                                                     @PathVariable("tranId") Long transactionId) {
+        System.out.println("Oke");
+        DeliveryReceiptTC responseDeliveryReceiptTC =  staffTranService.createDeliveryReceiptTC(deliveryReceiptDto,
+                collectionId,packageId,transactionId);
+        return new ResponseEntity<>(responseDeliveryReceiptTC, HttpStatus.OK);
     }
 
 }

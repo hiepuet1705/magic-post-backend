@@ -20,11 +20,11 @@ public class Package {
     private int weight;
     private String name;
     private String description;
-    private String receiverFirstName;
-    private String receiverLastName;
-    private String receiverAddress;
-
-    private String receiverPhoneNumber;
+//    private String receiverFirstName;
+//    private String receiverLastName;
+//    private String receiverAddress;
+//
+//    private String receiverPhoneNumber;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)

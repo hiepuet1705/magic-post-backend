@@ -26,6 +26,14 @@ public class DeliveryReceiptTC {
 
     private String type;
 
+    @Transient
+    private String sentPointAddress;
+
+    @Transient
+    private String receivePointAddress;
+    @Transient
+    private String packageName;
+
 
     @ManyToOne
     @JoinColumn(name = "transaction_id")

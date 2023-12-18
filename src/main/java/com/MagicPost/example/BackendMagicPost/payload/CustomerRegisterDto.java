@@ -14,7 +14,7 @@ public class CustomerRegisterDto {
     private String firstName;
     private String lastName;
     private String address;
-    private Long phoneNumber;
+    private String phoneNumber;
 
     private String username;
     private String password;

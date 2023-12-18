@@ -19,7 +19,9 @@ public class CustomerReceipt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Transient
     private String senderName;
+    @Transient
     private String senderPhoneNumber;
     private String name = "";
     private String description = "";
