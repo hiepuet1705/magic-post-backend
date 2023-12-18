@@ -9,4 +9,9 @@ public interface StaffTranService {
     public DeliveryReceiptTC createDeliveryReceiptTC(DeliveryReceiptTC deliveryReceiptTC,
                                                      Long collectionPointId, Long packageId, Long transactionPointId);
 
+
+    public String confirmReceiptFromCollectionPoint(Long deliveryCTId,Long packageId);
+
+    public
+
 }

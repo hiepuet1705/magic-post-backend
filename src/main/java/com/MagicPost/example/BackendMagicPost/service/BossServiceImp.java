@@ -80,5 +80,21 @@ public class BossServiceImp implements BossService{
         return packages;
     }
 
+    @Override
+    public List<StaffTransaction> getStaffFromATransactionPoint(Long tranId) {
+            TransactionPoint transactionPoint = transactionPointRepository.findById(tranId).
+                    orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point not found"));
+            List<StaffTransaction> listStaff = transactionPoint.getStaffTransactions().stream().toList();
+            return listStaff;
+    }
+
+    @Override
+    public List<StaffCollection> getStaffFromACollectionPoint(Long colId) {
+        CollectionPoint collectionPoint = collectionPointRepository.findById(colId).
+                orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Collection Point not found"));
+        List<StaffCollection> listStaff = collectionPoint.getStaffCollections().stream().toList();
+        return listStaff;
+    }
+
 
 }

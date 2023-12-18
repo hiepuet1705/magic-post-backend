@@ -1,5 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.entity;
 
+import com.MagicPost.example.BackendMagicPost.utils.PackageStatus;
+import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +28,7 @@ public class DeliveryReceiptTC {
 
     private String type;
 
+    private String status = ReceiptStatus.NOT_ARRIVE;
     @Transient
     private String sentPointAddress;
 

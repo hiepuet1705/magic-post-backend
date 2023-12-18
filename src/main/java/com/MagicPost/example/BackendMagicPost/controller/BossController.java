@@ -47,6 +47,18 @@ public class BossController {
         StaffCollection manager =  bossService.getManagerOfAColPoint(colId);
         return new ResponseEntity<>(manager,HttpStatus.OK);
     }
+    @GetMapping("/col-point/{id}/staff")
+    @PreAuthorize("hasRole('BOSS')")
+    public ResponseEntity<List<StaffCollection>> getAllStaffFromACollectionPoint(@PathVariable("id") Long colId){
+        List<StaffCollection> staffCollectionList = bossService.getStaffFromACollectionPoint(colId);
+        return new ResponseEntity<>(staffCollectionList,HttpStatus.OK);
+    }
+    @GetMapping("/tran-point/{id}/staff")
+    @PreAuthorize("hasRole('BOSS')")
+    public ResponseEntity<List<StaffTransaction>> getAllStaffFromATransactionPoint(@PathVariable("id") Long tranId){
+        List<StaffTransaction> staffTransactionList = bossService.getStaffFromATransactionPoint(tranId);
+        return new ResponseEntity<>(staffTransactionList,HttpStatus.OK);
+    }
 
 
     @GetMapping("/tran-point/{id}/packages")

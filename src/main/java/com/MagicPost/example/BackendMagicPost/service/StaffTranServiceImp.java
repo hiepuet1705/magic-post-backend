@@ -5,6 +5,8 @@ import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
 import com.MagicPost.example.BackendMagicPost.repository.*;
+import com.MagicPost.example.BackendMagicPost.utils.PackageStatus;
+import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ public class StaffTranServiceImp implements StaffTranService {
 
     private PackageRepository packageRepository;
 
+    private DeliveryReceiptCTRepository deliveryReceiptCTRepository;
+
 
     public StaffTranServiceImp(StaffTransactionRepository staffTransactionRepository,
                                 CustomerRepository customerRepository,
@@ -30,6 +34,7 @@ public class StaffTranServiceImp implements StaffTranService {
                                CollectionPointRepository collectionPointRepository,
                                DeliveryReceiptTCRepository deliveryReceiptTCRepository,
                                TransactionPointRepository transactionPointRepository,
+                               DeliveryReceiptCTRepository deliveryReceiptCTRepository,
                                PackageRepository packageRepository
                                 ) {
         this.staffTransactionRepository = staffTransactionRepository;
@@ -38,6 +43,7 @@ public class StaffTranServiceImp implements StaffTranService {
         this.deliveryReceiptTCRepository = deliveryReceiptTCRepository;
         this.transactionPointRepository = transactionPointRepository;
         this.collectionPointRepository = collectionPointRepository;
+        this.deliveryReceiptCTRepository = deliveryReceiptCTRepository;
         this.packageRepository = packageRepository;
     }
 
@@ -60,7 +66,7 @@ public class StaffTranServiceImp implements StaffTranService {
                orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point Not Found"));
         Package aPackage = packageRepository.findById(packageId).
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package Not found"));
-
+        aPackage.setStatus(PackageStatus.TRANSFERING);
 
         deliveryReceiptTC.setSentPointAddress(transactionPoint.getAddress());
         deliveryReceiptTC.setReceivePointAddress(collectionPoint.getAddress());
@@ -68,7 +74,7 @@ public class StaffTranServiceImp implements StaffTranService {
         deliveryReceiptTC.setTransactionPointSender(transactionPoint);
         deliveryReceiptTC.setCollectionPointReceiver(collectionPoint);
         deliveryReceiptTC.setAPackage(aPackage);
-
+        deliveryReceiptTC.setStatus(ReceiptStatus.TRANSFERED);
 
 
 
@@ -77,7 +83,19 @@ public class StaffTranServiceImp implements StaffTranService {
         return savedDeliveryReceiptTC;
     }
 
+    @Override
+    public String confirmReceiptFromCollectionPoint(Long deliveryCTId, Long packageId) {
+        Package aPackage = packageRepository.findById(packageId)
+                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
+        aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
+        DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.findById(deliveryCTId)
+                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"ReceiptCT not found"));
+        deliveryReceiptCT.setStatus(ReceiptStatus.CURR_HERE);
 
+        return "Confirm Receipt From Collection Point";
+
+
+    }
 
 
 }

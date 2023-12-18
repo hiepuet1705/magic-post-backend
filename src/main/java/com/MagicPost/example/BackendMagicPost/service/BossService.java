@@ -17,4 +17,8 @@ public interface BossService {
     public List<Package> getPackagesInATransactionPoint(Long tranId);
 
     public  List<Package> getPackagesInACollectionPoint(Long colId);
+
+    public List<StaffTransaction> getStaffFromATransactionPoint(Long tranId);
+    public List<StaffCollection> getStaffFromACollectionPoint(Long colId);
+
 }

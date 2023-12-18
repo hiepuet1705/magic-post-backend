@@ -1,5 +1,6 @@
 package com.MagicPost.example.BackendMagicPost.entity;
 
+import com.MagicPost.example.BackendMagicPost.utils.PackageStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,9 @@ public class Package {
     private int weight;
     private String name;
     private String description;
+    private String status;
+
+
 //    private String receiverFirstName;
 //    private String receiverLastName;
 //    private String receiverAddress;
@@ -32,10 +36,10 @@ public class Package {
     private Customer sender;
 
 
-    @Column(name = "transaction_id")
+    @Column(name = "current_transaction_id")
     private Long transactionPoint;
 
-    @Column(name = "collection_id")
+    @Column(name = "current_collection_id")
     private Long collectionPoint;
 
 
