@@ -149,7 +149,7 @@ public class AuthServiceImpl implements AuthService {
         staffCollection.setUser(userStaff);
         staffCollectionRepository.save(staffCollection);
 
-        return "staff trans create successfully";
+        return "staff Col create successfully";
     }
 
 }

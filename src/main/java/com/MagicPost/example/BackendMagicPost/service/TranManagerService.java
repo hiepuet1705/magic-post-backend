@@ -9,4 +9,8 @@ public interface TranManagerService {
     public TransactionPoint getTransactionPointByManagerId(Long managerId);
     public List<Package> getSentPackageInATransactionPoint(Long TranPointId);
 
+    public List<Package> getCurrentPackagesInATransactionPoint(Long TranPointId);
+
+    public List<Package> getReceivePackagesInATransactionPoint(Long tranPointId);
+
 }

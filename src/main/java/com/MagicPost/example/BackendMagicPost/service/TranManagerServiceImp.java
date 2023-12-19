@@ -45,13 +45,31 @@ public class TranManagerServiceImp implements TranManagerService {
 
     @Override
     public List<Package> getSentPackageInATransactionPoint(Long TranPointId) {
-        List<DeliveryReceiptTC> deliveryReceiptTCs =  deliveryReceiptTCRepository.getDeliveryRReceiptTCByTransactionPointId(TranPointId);
+        List<DeliveryReceiptTC> deliveryReceiptTCs =  deliveryReceiptTCRepository.
+                getSentDeliveryReceiptTCByTransactionPointId(TranPointId);
 
 
         List<Package> packages = deliveryReceiptTCs.stream().map(deliveryReceiptTC ->
                 packageRepository.findById(deliveryReceiptTC.getAPackage().getId())
                 .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,
                         "Manager not found"))).toList();
+        return packages;
+
+    }
+
+    @Override
+    public List<Package> getCurrentPackagesInATransactionPoint(Long tranPointId) {
+        return packageRepository.getReceivePackageInATransactionPoint(tranPointId);
+    }
+
+    @Override
+    public List<Package> getReceivePackagesInATransactionPoint(Long tranPointId) {
+        List<DeliveryReceiptTC> deliveryReceiptTCs =
+                deliveryReceiptTCRepository.getReceivedDeliveryReceiptTCByTransactionPointId(tranPointId);
+        List<Package> packages = deliveryReceiptTCs.stream().map(deliveryReceiptTC ->
+                packageRepository.findById(deliveryReceiptTC.getAPackage().getId())
+                        .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,
+                                "Manager not found"))).toList();
         return packages;
 
     }

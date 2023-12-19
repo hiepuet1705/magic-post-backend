@@ -10,4 +10,10 @@ import java.util.List;
 public interface DeliveryReceiptTCRepository extends JpaRepository<DeliveryReceiptTC,Long> {
     @Query("SELECT d FROM DeliveryReceiptTC d WHERE d.transactionPointSender.id = :tranPointId")
     public List<DeliveryReceiptTC> getDeliveryRReceiptTCByTransactionPointId(@Param("tranPointId") Long tranPointId);
+
+    @Query("SELECT d FROM DeliveryReceiptTC d WHERE d.transactionPointSender.id = :tranPointId AND d.status = 'TRANSFERED'")
+    public List<DeliveryReceiptTC> getSentDeliveryReceiptTCByTransactionPointId(@Param("tranPointId") Long tranPointId);
+
+    @Query("SELECT d FROM DeliveryReceiptTC d WHERE d.transactionPointSender.id = :tranPointId AND (d.status = 'TRANSFERED' OR d.status = 'CURR_HERE')")
+    public List<DeliveryReceiptTC> getReceivedDeliveryReceiptTCByTransactionPointId(@Param("tranPointId") Long tranPointId);
 }

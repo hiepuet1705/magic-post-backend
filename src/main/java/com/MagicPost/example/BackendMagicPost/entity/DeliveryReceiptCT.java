@@ -38,11 +38,11 @@ public class DeliveryReceiptCT {
 
 
     @ManyToOne
-    @JoinColumn(name = "transaction_id")
-    private CollectionPoint transactionPointSender;
+    @JoinColumn(name = "collection_id")
+    private CollectionPoint collectionPointSender;
 
     @ManyToOne
-    @JoinColumn(name = "collection_id")
+    @JoinColumn(name = "transaction_id")
     private TransactionPoint transactionPointReceiver;
 
     @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})

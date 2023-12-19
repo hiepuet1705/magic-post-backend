@@ -38,13 +38,13 @@ public class DeliveryReceiptCC {
 
 
     @ManyToOne
-    @JoinColumn(name = "transaction_id")
-    private CollectionPoint transactionPointSender;
+    @JoinColumn(name = "collection_id1")
+    private CollectionPoint collectionPointSender;
 
 
 
     @ManyToOne
-    @JoinColumn(name = "collection_id")
+    @JoinColumn(name = "collection_id2")
     private CollectionPoint collectionPointReceiver;
 
     @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
