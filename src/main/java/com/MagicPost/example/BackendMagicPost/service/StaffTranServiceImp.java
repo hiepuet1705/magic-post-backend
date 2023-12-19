@@ -10,6 +10,8 @@ import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StaffTranServiceImp implements StaffTranService {
 
@@ -27,6 +29,8 @@ public class StaffTranServiceImp implements StaffTranService {
 
     private DeliveryReceiptCTRepository deliveryReceiptCTRepository;
 
+    private DeliveryReceiptToReceiverRepository deliveryReceiptToReceiverRepository;
+
 
     public StaffTranServiceImp(StaffTransactionRepository staffTransactionRepository,
                                 CustomerRepository customerRepository,
@@ -35,6 +39,7 @@ public class StaffTranServiceImp implements StaffTranService {
                                DeliveryReceiptTCRepository deliveryReceiptTCRepository,
                                TransactionPointRepository transactionPointRepository,
                                DeliveryReceiptCTRepository deliveryReceiptCTRepository,
+                               DeliveryReceiptToReceiverRepository deliveryReceiptToReceiverRepository,
                                PackageRepository packageRepository
                                 ) {
         this.staffTransactionRepository = staffTransactionRepository;
@@ -45,6 +50,7 @@ public class StaffTranServiceImp implements StaffTranService {
         this.collectionPointRepository = collectionPointRepository;
         this.deliveryReceiptCTRepository = deliveryReceiptCTRepository;
         this.packageRepository = packageRepository;
+        this.deliveryReceiptToReceiverRepository = deliveryReceiptToReceiverRepository;
     }
 
     @Override
@@ -92,7 +98,57 @@ public class StaffTranServiceImp implements StaffTranService {
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"ReceiptCT not found"));
         deliveryReceiptCT.setStatus(ReceiptStatus.CURR_HERE);
 
+        // save
+        packageRepository.save(aPackage);
+        deliveryReceiptCTRepository.save(deliveryReceiptCT);
+
         return "Confirm Receipt From Collection Point";
+
+
+    }
+
+    @Override
+    public DeliveryReceiptToReceiver createReceiptToReceiver(DeliveryReceiptToReceiver deliveryReceiptToReceiver,
+                                                             Long transactionPointId, Long packageId) {
+        TransactionPoint transactionPoint = transactionPointRepository.findById(transactionPointId).
+                orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point Not Found"));
+        Package aPackage = packageRepository.findById(packageId).
+                orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package Not found"));
+        aPackage.setStatus(PackageStatus.TRANSFERING);
+        deliveryReceiptToReceiver.setAPackage(aPackage);
+        deliveryReceiptToReceiver.setTransactionPointSender(transactionPoint);
+        deliveryReceiptToReceiver.setSentPointAddress(transactionPoint.getAddress());
+        deliveryReceiptToReceiver.setPackageName(aPackage.getName());
+        DeliveryReceiptToReceiver savedReceipt = deliveryReceiptToReceiverRepository.save(deliveryReceiptToReceiver);
+        return savedReceipt;
+    }
+
+    @Override
+    public String confirmShippedToReceiver(Long deliveryRToReceiverId) {
+        DeliveryReceiptToReceiver deliveryReceiptToReceiver = deliveryReceiptToReceiverRepository.findById(deliveryRToReceiverId)
+                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"receipt to receiver not found"));
+        deliveryReceiptToReceiver.setStatus(ReceiptStatus.TRANSFERED);
+        deliveryReceiptToReceiverRepository.save(deliveryReceiptToReceiver);
+        return "Successfully transfer to Receiver";
+    }
+
+    @Override
+    public String confirmShippedUncompletedToReceiver(Long deliveryRToReceiverId) {
+        DeliveryReceiptToReceiver deliveryReceiptToReceiver = deliveryReceiptToReceiverRepository.findById(deliveryRToReceiverId)
+                .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Receipt to receiver not found"));
+        if(deliveryReceiptToReceiver.getStatus().equals(ReceiptStatus.TRANSFERED) ){
+            deliveryReceiptToReceiver.setStatus(ReceiptStatus.UNCOMPLETED);
+            deliveryReceiptToReceiverRepository.save(deliveryReceiptToReceiver);
+            return "Incompleted transfer to Receiver ";
+        }
+        return "Cannot confirm Incompleted";
+    }
+
+    @Override
+    public List<DeliveryReceiptToReceiver> getAllCompletedPackage(Long tranId) {
+            List<DeliveryReceiptToReceiver> deliveryReceiptToReceivers =
+                    deliveryReceiptToReceiverRepository.getAllCompletedDeliveryReceiptToReceiverByTranId(tranId);
+            return deliveryReceiptToReceivers;
 
 
     }

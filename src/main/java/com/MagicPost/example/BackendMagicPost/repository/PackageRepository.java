@@ -17,4 +17,7 @@ public interface PackageRepository extends JpaRepository<Package,Long> {
     public List<Package> getPackagesInCollectionPoint(@Param("colId") Long colId);
 
 
+
+
+
 }

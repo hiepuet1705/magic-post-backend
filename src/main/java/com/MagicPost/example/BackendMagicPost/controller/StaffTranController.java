@@ -2,11 +2,14 @@ package com.MagicPost.example.BackendMagicPost.controller;
 
 import com.MagicPost.example.BackendMagicPost.entity.CustomerReceipt;
 import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptTC;
+import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptToReceiver;
 import com.MagicPost.example.BackendMagicPost.service.StaffTranService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/staff/tran")
@@ -36,5 +39,26 @@ public class StaffTranController {
                 collectionId,packageId,transactionId);
         return new ResponseEntity<>(responseDeliveryReceiptTC, HttpStatus.OK);
     }
+
+    @PutMapping("/receipt-ct/confirm/{receiptCTId}/packageId")
+    @PreAuthorize("hasRole('OFFICERTRAN')")
+    public ResponseEntity<String> confirmReceiptFromCollectionPoint(@PathVariable("receiptCTId") Long receiptTCId,
+                                                                    @PathVariable Long packageId){
+
+        String confirm = staffTranService.confirmReceiptFromCollectionPoint(receiptTCId, packageId);
+        return new ResponseEntity<>(confirm,HttpStatus.OK);
+
+    }
+
+        @GetMapping("/completed-packages/{tranId}")
+    @PreAuthorize("hasRole('OFFICERTRAN')")
+    public ResponseEntity<List<DeliveryReceiptToReceiver>> getAllCompletedPackage(@PathVariable("tranId") Long tranId){
+            System.out.println("Okeeeeeeeeeeeeeee");
+        List<DeliveryReceiptToReceiver> completedDeliveryReceiptToReceivers =
+                staffTranService.getAllCompletedPackage(tranId);
+            System.out.printf("Okieeeeeeeeeeeeeeeee");
+        return new ResponseEntity<>(completedDeliveryReceiptToReceivers,HttpStatus.OK);
+    }
+
 
 }
