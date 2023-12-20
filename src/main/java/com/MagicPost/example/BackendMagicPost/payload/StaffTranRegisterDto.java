@@ -14,6 +14,8 @@ public class StaffTranRegisterDto {
     private String name;
     private String username;
     private String password;
+    private String phoneNumber;
+    private Long tranId;
 
 
 }

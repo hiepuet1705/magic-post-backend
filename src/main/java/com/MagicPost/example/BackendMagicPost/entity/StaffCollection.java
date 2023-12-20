@@ -22,7 +22,7 @@ public class StaffCollection {
 
     private String phoneNumber;
 
-    private Boolean isManager;
+    private Boolean isManager = false;
 
 
     // Point Id

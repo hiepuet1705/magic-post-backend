@@ -38,6 +38,8 @@ public class AuthServiceImpl implements AuthService {
 
     private StaffCollectionRepository staffCollectionRepository;
 
+    private TransactionPointRepository transactionPointRepository;
+
     public AuthServiceImpl(UserRepository userRepository,
                            CustomerRepository customerRepository,
                            RoleRepository roleRepository,
@@ -45,7 +47,8 @@ public class AuthServiceImpl implements AuthService {
                            PasswordEncoder passwordEncoder,
                            JwtTokenProvider jwtTokenProvider,
                            StaffTransactionRepository staffTransactionRepository,
-                           StaffCollectionRepository staffCollectionRepository) {
+                           StaffCollectionRepository staffCollectionRepository,
+                           TransactionPointRepository transactionPointRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
@@ -54,6 +57,7 @@ public class AuthServiceImpl implements AuthService {
         this.customerRepository = customerRepository;
         this.staffTransactionRepository = staffTransactionRepository;
         this.staffCollectionRepository = staffCollectionRepository;
+        this.transactionPointRepository = transactionPointRepository;
     }
 
     //
@@ -108,9 +112,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String createAccountForStaffTran(StaffTranRegisterDto staffRegisterDto) {
-
+        TransactionPoint transactionPoint = transactionPointRepository.findById(staffRegisterDto.getTranId())
+                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point Not Found"));
         StaffTransaction staffTransaction = new StaffTransaction();
         staffTransaction.setName(staffRegisterDto.getName());
+        staffTransaction.setPhoneNumber(staffRegisterDto.getPhoneNumber());
+        staffTransaction.setTransactionPoint(transactionPoint);
+
+        // User
         User userStaff = new User();
         userStaff.setUsername(staffRegisterDto.getUsername());
         userStaff.setPassword(passwordEncoder.encode(staffRegisterDto.getPassword()));
@@ -140,7 +149,7 @@ public class AuthServiceImpl implements AuthService {
         staffCollection.setUser(userStaff);
         staffCollectionRepository.save(staffCollection);
 
-        return "staff trans create successfully";
+        return "staff Col create successfully";
     }
 
 }

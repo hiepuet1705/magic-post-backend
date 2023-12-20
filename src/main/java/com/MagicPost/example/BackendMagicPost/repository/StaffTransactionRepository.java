@@ -8,4 +8,6 @@ import org.springframework.data.repository.query.Param;
 public interface StaffTransactionRepository extends JpaRepository<StaffTransaction,Long> {
     @Query("SELECT s FROM StaffTransaction s WHERE s.isManager = true AND s.transactionPoint.id = :tranId")
     public StaffTransaction getStaffByIsManager(@Param("tranId") Long tranId);
+
+
 }

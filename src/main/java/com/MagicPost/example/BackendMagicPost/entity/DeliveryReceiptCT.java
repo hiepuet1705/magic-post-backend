@@ -1,5 +1,6 @@
 package com.MagicPost.example.BackendMagicPost.entity;
 
+import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,13 +27,22 @@ public class DeliveryReceiptCT {
 
     private String type;
 
+    private String status = ReceiptStatus.NOT_ARRIVE;
+    @Transient
+    private String sentPointAddress;
 
-    @ManyToOne
-    @JoinColumn(name = "transaction_id")
-    private CollectionPoint transactionPointSender;
+    @Transient
+    private String receivePointAddress;
+    @Transient
+    private String packageName;
+
 
     @ManyToOne
     @JoinColumn(name = "collection_id")
+    private CollectionPoint collectionPointSender;
+
+    @ManyToOne
+    @JoinColumn(name = "transaction_id")
     private TransactionPoint transactionPointReceiver;
 
     @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
