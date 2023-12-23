@@ -8,13 +8,17 @@ import com.MagicPost.example.BackendMagicPost.entity.Package;
 import java.util.List;
 
 public interface StaffTranService {
+
+    Package createPackage(Package aPackage);
     public CustomerReceipt createCustomerReceipt(Long CustomerId, CustomerReceipt customerReceiptDto);
 
+
+    // need to update
     public DeliveryReceiptTC createDeliveryReceiptTC(DeliveryReceiptTC deliveryReceiptTC,
                                                      Long collectionPointId, Long packageId, Long transactionPointId);
 
 
-    public String confirmReceiptFromCollectionPoint(Long deliveryCTId,Long packageId);
+    public String confirmReceiptFromCollectionPoint(Long deliveryCTId);
 
     public DeliveryReceiptToReceiver createReceiptToReceiver(DeliveryReceiptToReceiver deliveryReceiptToReceiver,
                                                              Long transactionPointId,

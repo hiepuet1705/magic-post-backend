@@ -54,6 +54,11 @@ public class StaffTranServiceImp implements StaffTranService {
     }
 
     @Override
+    public Package createPackage(Package aPackage) {
+        return null;
+    }
+
+    @Override
     public CustomerReceipt createCustomerReceipt(Long CustomerId, CustomerReceipt customerReceipt) {
         Customer customer = customerRepository.findById(CustomerId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Customer not found"));
@@ -67,7 +72,8 @@ public class StaffTranServiceImp implements StaffTranService {
     // More CreatePackage
 
     @Override
-    public DeliveryReceiptTC createDeliveryReceiptTC(DeliveryReceiptTC deliveryReceiptTC, Long collectionPointId, Long packageId, Long transactionPointId) {
+    public DeliveryReceiptTC createDeliveryReceiptTC(DeliveryReceiptTC deliveryReceiptTC,
+                                                     Long collectionPointId, Long packageId, Long transactionPointId) {
         CollectionPoint collectionPoint = collectionPointRepository.findById(collectionPointId).
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Collection Point not found"));
         TransactionPoint transactionPoint = transactionPointRepository.findById(transactionPointId).
@@ -77,8 +83,10 @@ public class StaffTranServiceImp implements StaffTranService {
 
         // Update package
         aPackage.setStatus(PackageStatus.TRANSFERING);
-        aPackage.setCollectionPoint(collectionPointId);
-        aPackage.setTransactionPoint(0L);
+
+        // Xac nhan thi moi sua
+//        aPackage.setCollectionPoint(collectionPointId);
+//        aPackage.setTransactionPoint(0L);
 
         deliveryReceiptTC.setSentPointAddress(transactionPoint.getAddress());
         deliveryReceiptTC.setReceivePointAddress(collectionPoint.getAddress());
@@ -86,24 +94,22 @@ public class StaffTranServiceImp implements StaffTranService {
         deliveryReceiptTC.setTransactionPointSender(transactionPoint);
         deliveryReceiptTC.setCollectionPointReceiver(collectionPoint);
         deliveryReceiptTC.setAPackage(aPackage);
-        deliveryReceiptTC.setStatus(ReceiptStatus.TRANSFERED);
-
-
-
-
+        deliveryReceiptTC.setStatus(ReceiptStatus.TRANSFERING);
         DeliveryReceiptTC savedDeliveryReceiptTC =  deliveryReceiptTCRepository.save(deliveryReceiptTC);
         return savedDeliveryReceiptTC;
     }
 
     @Override
-    public String confirmReceiptFromCollectionPoint(Long deliveryCTId, Long packageId) {
+    public String confirmReceiptFromCollectionPoint(Long deliveryCTId) {
 
         DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.findById(deliveryCTId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"ReceiptCT not found"));
-        // 4 Receipt chi co 1 cai CurrHere
-        deliveryReceiptCT.setStatus(ReceiptStatus.CURR_HERE);
+        Long packageId = deliveryReceiptCT.getAPackage().getId();
         Package aPackage = packageRepository.findById(packageId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
+
+        deliveryReceiptCT.setStatus(ReceiptStatus.TRANSFERED);
+
         aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
 
         // Update
@@ -114,7 +120,7 @@ public class StaffTranServiceImp implements StaffTranService {
         packageRepository.save(aPackage);
         deliveryReceiptCTRepository.save(deliveryReceiptCT);
 
-        return "Confirm Receipt From Collection Point";
+        return "Confirm Receipt From Collection Point with PackageId = " + packageId ;
 
 
     }
@@ -128,6 +134,7 @@ public class StaffTranServiceImp implements StaffTranService {
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package Not found"));
         aPackage.setStatus(PackageStatus.TRANSFERING);
         deliveryReceiptToReceiver.setAPackage(aPackage);
+        deliveryReceiptToReceiver.setStatus(ReceiptStatus.TRANSFERING);
         deliveryReceiptToReceiver.setTransactionPointSender(transactionPoint);
         deliveryReceiptToReceiver.setSentPointAddress(transactionPoint.getAddress());
         deliveryReceiptToReceiver.setPackageName(aPackage.getName());
@@ -149,7 +156,7 @@ public class StaffTranServiceImp implements StaffTranService {
         packageRepository.save(aPackage);
         deliveryReceiptToReceiverRepository.save(deliveryReceiptToReceiver);
 
-        return "Successfully transfer to Receiver";
+        return "Successfully transfer to Receiver ";
     }
 
     @Override

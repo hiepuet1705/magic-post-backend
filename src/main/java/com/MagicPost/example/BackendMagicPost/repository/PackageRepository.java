@@ -10,17 +10,20 @@ import java.util.List;
 public interface PackageRepository extends JpaRepository<Package,Long> {
 
     @Query("SELECT p FROM Package p JOIN FETCH p.sender WHERE p.transactionPoint = :tranId")
-    public List<Package> getPackagesInTransactionPoint(@Param("tranId") Long tranId);
+     List<Package> getPackagesInTransactionPoint(@Param("tranId") Long tranId);
 
 
     @Query("SELECT p FROM Package p JOIN FETCH p.sender WHERE p.collectionPoint = :colId")
-    public List<Package> getPackagesInCollectionPoint(@Param("colId") Long colId);
+     List<Package> getPackagesInCollectionPoint(@Param("colId") Long colId);
 
-    @Query("SELECT p FROM Package p WHERE p.transactionPoint = :tranId")
-    public List<Package> getCurrentPackageInATransactionPoint(@Param("tranId") Long tranId);
+    @Query("SELECT p FROM Package p WHERE p.transactionPoint = :tranId AND p.status = 'AT_TRANSACTION_POINT'")
+     List<Package> getCurrentPackageInATransactionPoint(@Param("tranId") Long tranId);
 
-    @Query("SELECT p FROM Package p WHERE p.collectionPoint = :colId")
-    public List<Package> getCurrentPackagesInCollectionPoint(@Param("colId") Long colId);
+    @Query("SELECT p FROM Package p WHERE p.collectionPoint = :colId AND p.status = 'AT_COLLECTION_POINT'")
+     List<Package> getCurrentPackagesInCollectionPoint(@Param("colId") Long colId);
+
+    @Query("SELECT p FROM Package p WHERE p.sender.id = :customerId")
+    List<Package> getPackagesByCustomerId(@Param("customerId") Long customerId);
 
 
 

@@ -1,6 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.entity;
 
 import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,12 +39,14 @@ public class DeliveryReceiptCC {
 
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "collection_id1")
     private CollectionPoint collectionPointSender;
 
 
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "collection_id2")
     private CollectionPoint collectionPointReceiver;
 

@@ -11,6 +11,8 @@ public interface TranManagerService {
 
     public List<Package> getCurrentPackagesInATransactionPoint(Long TranPointId);
 
+
+
     public List<Package> getReceivePackagesInATransactionPoint(Long tranPointId);
 
 }

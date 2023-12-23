@@ -40,17 +40,17 @@ public class StaffTranController {
         return new ResponseEntity<>(responseDeliveryReceiptTC, HttpStatus.OK);
     }
 
-    @PutMapping("/receipt-ct/confirm/{receiptCTId}/packageId")
+    @PutMapping("/receipt-ct/confirm/{receiptCTId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<String> confirmReceiptFromCollectionPoint(@PathVariable("receiptCTId") Long receiptTCId,
-                                                                    @PathVariable Long packageId){
+    public ResponseEntity<String> confirmReceiptFromCollectionPoint(@PathVariable("receiptCTId") Long receiptCTId
+                                                                    ){
 
-        String confirm = staffTranService.confirmReceiptFromCollectionPoint(receiptTCId, packageId);
+        String confirm = staffTranService.confirmReceiptFromCollectionPoint(receiptCTId);
         return new ResponseEntity<>(confirm,HttpStatus.OK);
 
     }
 
-        @GetMapping("/completed-packages/{tranId}")
+    @GetMapping("/completed-packages/{tranId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
     public ResponseEntity<List<DeliveryReceiptToReceiver>> getAllCompletedPackage(@PathVariable("tranId") Long tranId){
             System.out.println("Okeeeeeeeeeeeeeee");
