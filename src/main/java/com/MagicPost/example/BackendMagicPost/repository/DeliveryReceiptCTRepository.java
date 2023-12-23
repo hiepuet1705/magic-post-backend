@@ -9,12 +9,15 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface DeliveryReceiptCTRepository extends JpaRepository<DeliveryReceiptCT,Long> {
-    @Query("SELECT d FROM DeliveryReceiptTC d WHERE d.collectionPointSender.id = :colPointId")
+    @Query("SELECT d FROM DeliveryReceiptCT d WHERE d.collectionPointSender.id = :colPointId")
     public List<DeliveryReceiptCT> getDeliveryRReceiptCTByCollectionPointId(@Param("colPointId") Long colPointId);
 
-    @Query("SELECT d FROM DeliveryReceiptTC d WHERE d.collectionPointSender.id = :colPointId AND d.status = 'TRANSFERED'")
+    @Query("SELECT d FROM DeliveryReceiptCT d WHERE d.collectionPointSender.id = :colPointId AND d.status = 'TRANSFERED'")
     public List<DeliveryReceiptCT> getSentDeliveryReceiptCTByCollectionPointId(@Param("colPointId") Long colPointId);
 
-    @Query("SELECT d FROM DeliveryReceiptTC d WHERE d.collectionPointSender.id = :colPointId AND (d.status = 'TRANSFERED' OR d.status = 'CURR_HERE')")
+    @Query("SELECT d FROM DeliveryReceiptCT d WHERE d.collectionPointSender.id = :colPointId AND (d.status = 'TRANSFERED' OR d.status = 'CURR_HERE')")
     public List<DeliveryReceiptCT> getReceivedDeliveryReceiptCTByCollectionPointId(@Param("colPointId") Long colPointId);
+
+    @Query("SELECT d FROM DeliveryReceiptCT d WHERE d.transactionPointReceiver.id = :tranId AND (d.status = 'TRANSFERED' OR d.status = 'CURR_HERE')")
+    public List<DeliveryReceiptCT> getReceivedDeliveryReceiptCTByTransactionPointId(@Param("tranId") Long tranId);
 }

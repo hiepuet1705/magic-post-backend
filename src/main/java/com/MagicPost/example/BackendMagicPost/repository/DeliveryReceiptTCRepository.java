@@ -16,4 +16,7 @@ public interface DeliveryReceiptTCRepository extends JpaRepository<DeliveryRecei
 
     @Query("SELECT d FROM DeliveryReceiptTC d WHERE d.transactionPointSender.id = :tranPointId AND (d.status = 'TRANSFERED' OR d.status = 'CURR_HERE')")
     public List<DeliveryReceiptTC> getReceivedDeliveryReceiptTCByTransactionPointId(@Param("tranPointId") Long tranPointId);
+
+    @Query("SELECT d FROM DeliveryReceiptTC d WHERE d.collectionPointReceiver.id = :colId AND (d.status = 'TRANSFERED' OR d.status = 'CURR_HERE')")
+    public List<DeliveryReceiptTC> getDeliveryReceiptTCByCollectionPointId(@Param("colId") Long colId);
 }

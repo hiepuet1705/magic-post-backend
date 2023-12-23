@@ -37,4 +37,12 @@ public class CustomerReceipt {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customerSender;
+
+    @ManyToOne
+    @JoinColumn(name = "transaction_id")
+    private TransactionPoint transactionPointReceive;
+
+    @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @JoinColumn(name = "package_id")
+    private Package aPackage;
 }

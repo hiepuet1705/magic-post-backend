@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/manager")
+@RequestMapping("api/manager/tran")
 public class TranManagerController {
     private TranManagerService tranManagerService;
 
@@ -21,7 +21,7 @@ public class TranManagerController {
         this.tranManagerService = tranManagerService;
     }
 
-    @GetMapping("/tran/{id}/sent-packages")
+    @GetMapping("/{id}/sent-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
     public ResponseEntity<List<Package>> getSentPackagesInATransactionPoint(@PathVariable("id") Long tranPointId){
 
@@ -29,14 +29,14 @@ public class TranManagerController {
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
-    @GetMapping("/tran/{id}/curr-packages")
+    @GetMapping("/{id}/curr-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
     public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(@PathVariable("id") Long tranId){
         List<Package> packages = tranManagerService.getCurrentPackagesInATransactionPoint(tranId);
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
-    @GetMapping("/tran/{id}/rec-packages")
+    @GetMapping("/{id}/rec-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
     public ResponseEntity<List<Package>> getReceivePackagesInATransactionPoint(@PathVariable("id") Long tranId){
         List<Package> packages = tranManagerService.getReceivePackagesInATransactionPoint(tranId);

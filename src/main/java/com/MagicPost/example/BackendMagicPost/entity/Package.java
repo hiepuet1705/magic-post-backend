@@ -54,6 +54,9 @@ public class Package {
     @OneToOne(mappedBy = "aPackage",cascade = CascadeType.ALL)
     private DeliveryReceiptToReceiver deliveryReceiptToReceiver;
 
+    @OneToOne(mappedBy = "aPackage",cascade = CascadeType.ALL)
+    private CustomerReceipt customerReceipt;
+
 
 
 
