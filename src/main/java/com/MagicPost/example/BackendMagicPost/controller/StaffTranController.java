@@ -3,6 +3,7 @@ package com.MagicPost.example.BackendMagicPost.controller;
 import com.MagicPost.example.BackendMagicPost.entity.CustomerReceipt;
 import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptTC;
 import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptToReceiver;
+import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.service.StaffTranService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,13 @@ public class StaffTranController {
         this.staffTranService = staffTranService;
     }
 
-    @PostMapping("/customer-receipt/{id}")
+    @PostMapping("/customer-receipt/{customerId}/{packageId}/{tranId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<CustomerReceipt> createCustomerReceipt(@PathVariable("id") Long CustomerId,
+    public ResponseEntity<CustomerReceipt> createCustomerReceipt(@PathVariable("customerId") Long CustomerId,
+                                                                 @PathVariable("packageId") Long packageId,
+                                                                 @PathVariable("tranId") Long tranId,
                                                                  @RequestBody CustomerReceipt customerReceipt) {
-            CustomerReceipt responseCustomerReceipt =  staffTranService.createCustomerReceipt(CustomerId,customerReceipt);
+            CustomerReceipt responseCustomerReceipt =  staffTranService.createCustomerReceipt(CustomerId,packageId,tranId, customerReceipt);
             return new ResponseEntity<>(responseCustomerReceipt, HttpStatus.OK);
     }
 
@@ -38,6 +41,17 @@ public class StaffTranController {
         DeliveryReceiptTC responseDeliveryReceiptTC =  staffTranService.createDeliveryReceiptTC(deliveryReceiptDto,
                 collectionId,packageId,transactionId);
         return new ResponseEntity<>(responseDeliveryReceiptTC, HttpStatus.OK);
+    }
+    @PostMapping("/package/{customerId}/{tranId}")
+    @PreAuthorize("hasRole('OFFICERTRAN')")
+    public ResponseEntity<Package> createPackage(@RequestBody Package aPackage,
+                                                 @PathVariable("customerId") Long customerId,
+                                                 @PathVariable("tranId") Long tranId) {
+
+
+            Package savedPackage = staffTranService.createPackage(aPackage,customerId,tranId);
+            return new ResponseEntity<>(savedPackage,HttpStatus.OK);
+
     }
 
     @PutMapping("/receipt-ct/confirm/{receiptCTId}")

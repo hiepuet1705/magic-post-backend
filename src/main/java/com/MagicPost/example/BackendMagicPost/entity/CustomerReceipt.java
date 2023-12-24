@@ -41,11 +41,11 @@ public class CustomerReceipt {
     private Customer customerSender;
 
     @ManyToOne
-    @JsonBackReference
+//    @JsonBackReference
     @JoinColumn(name = "transaction_id")
     private TransactionPoint transactionPointReceive;
 
-    @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},fetch = FetchType.LAZY)
     @JoinColumn(name = "package_id")
     private Package aPackage;
 }

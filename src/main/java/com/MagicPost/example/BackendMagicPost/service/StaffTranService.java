@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface StaffTranService {
 
-    Package createPackage(Package aPackage);
-    public CustomerReceipt createCustomerReceipt(Long CustomerId, CustomerReceipt customerReceiptDto);
+    Package createPackage(Package aPackage,Long customerId,Long tranId);
+    public CustomerReceipt createCustomerReceipt(Long CustomerId,Long packageId,Long tranId, CustomerReceipt customerReceiptDto);
 
 
     // need to update

@@ -21,7 +21,7 @@ public class Package {
     private int weight;
     private String name;
     private String description;
-    private String status;
+    private String status = PackageStatus.AT_TRANSACTION_POINT;
 
 
 //    private String receiverFirstName;
@@ -37,16 +37,10 @@ public class Package {
 
 
     @Column(name = "current_transaction_id")
-    private Long transactionPoint;
+    private Long transactionPoint = 0L;
 
     @Column(name = "current_collection_id")
-    private Long collectionPoint;
-
-
-    @OneToOne(mappedBy = "aPackage",cascade = CascadeType.ALL)
-    private CustomerReceipt customerReceipt;
-
-
+    private Long collectionPoint = 0L;
 
 
 }
