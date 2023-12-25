@@ -27,5 +27,4 @@ public class CustomerController {
         List<Package> packages = customerService.getAllPackagesByCustomerId(customerId);
         return new ResponseEntity<>(packages, HttpStatus.OK);
     }
-
 }

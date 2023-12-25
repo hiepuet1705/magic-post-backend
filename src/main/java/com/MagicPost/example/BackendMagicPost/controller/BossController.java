@@ -75,5 +75,4 @@ public class BossController {
         List<Package> packages = bossService.getPackagesInACollectionPoint(colId);
         return new ResponseEntity<>(packages,HttpStatus.OK);
     }
-
 }

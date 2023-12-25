@@ -28,10 +28,4 @@ public class TransactionPoint {
     @JsonManagedReference
     @OneToMany(mappedBy = "transactionPoint",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<StaffTransaction> staffTransactions = new HashSet<>();
-
-
-//    @ManyToOne()
-//    private CollectionPoint collectionPoint;
-
-
 }

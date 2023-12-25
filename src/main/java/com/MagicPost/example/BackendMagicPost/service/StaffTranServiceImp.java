@@ -76,8 +76,8 @@ public class StaffTranServiceImp implements StaffTranService {
         customerReceipt.setCustomerSender(customer);
         customerReceipt.setAPackage(aPackage);
         customerReceipt.setTransactionPointReceive(transactionPoint);
-        customerReceipt.setSenderName(customer.getFirstName()+customer.getLastName());
-        customerReceipt.setSenderPhoneNumber(customer.getPhoneNumber());
+        customerReceipt.setSenderName(customer.getUser().getFirstName()+customer.getUser().getLastName());
+        customerReceipt.setSenderPhoneNumber(customer.getUser().getPhoneNumber());
         CustomerReceipt customerReceipt1 =  customerReceiptRepository.save(customerReceipt);
         return customerReceipt1;
     }

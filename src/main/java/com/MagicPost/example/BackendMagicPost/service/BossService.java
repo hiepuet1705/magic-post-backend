@@ -20,5 +20,4 @@ public interface BossService {
 
     public List<StaffTransaction> getStaffFromATransactionPoint(Long tranId);
     public List<StaffCollection> getStaffFromACollectionPoint(Long colId);
-
 }

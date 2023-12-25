@@ -85,47 +85,43 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomApiException(HttpStatus.BAD_REQUEST, "Username is already exists");
         }
 
-        // map
-//        User user = new User();
-//        user.setUsername(registerDto.getUsername());
-//        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-//        Set<Role> roles = new HashSet<>();
-//        Role userRole = roleRepository.findByName(Constant.roleCustomer).get();
-//        roles.add(userRole);
-//        user.setRoles(roles);
-        Customer customer = new Customer();
-        customer.setAddress(registerDto.getAddress());
-        customer.setFirstName(registerDto.getFirstName());
-        customer.setLastName(registerDto.getLastName());
-        customer.setPhoneNumber(registerDto.getPhoneNumber());
         User user = new User();
+        user.setAddress(registerDto.getAddress());
+        user.setFirstName(registerDto.getFirstName());
+        user.setLastName(registerDto.getLastName());
+        user.setPhoneNumber(registerDto.getPhoneNumber());
+
         user.setUsername(registerDto.getUsername());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName(Constant.roleCustomer).get();
         roles.add(userRole);
         user.setRoles(roles);
-        customer.setUser(user);
 
+        Customer customer = new Customer();
+        customer.setUser(user);
 
         customerRepository.save(customer);
         return "User register successfully";
     }
-
 
     @Override
     public String createAccountForStaffTran(StaffRegisterDto staffRegisterDto) {
         TransactionPoint transactionPoint = transactionPointRepository.findById(staffRegisterDto.getPointId())
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point Not Found"));
         StaffTransaction staffTransaction = new StaffTransaction();
-        staffTransaction.setName(staffRegisterDto.getName());
-        staffTransaction.setPhoneNumber(staffRegisterDto.getPhoneNumber());
         staffTransaction.setTransactionPoint(transactionPoint);
 
         // User
         User userStaff = new User();
+        userStaff.setFirstName(staffRegisterDto.getFirstName());
+        userStaff.setLastName(staffRegisterDto.getLastName());
+        userStaff.setPhoneNumber(staffRegisterDto.getPhoneNumber());
+        userStaff.setAddress(staffRegisterDto.getAddress());
         userStaff.setUsername(staffRegisterDto.getUsername());
         userStaff.setPassword(passwordEncoder.encode(staffRegisterDto.getPassword()));
+
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName(Constant.roleStaffTran).get();
         roles.add(userRole);
@@ -141,14 +137,18 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String createAccountForStaffCol(StaffRegisterDto staffRegisterDto) {
         CollectionPoint collectionPoint = collectionPointRepository.findById(staffRegisterDto.getPointId())
-                .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Collection Point not found "));
+                .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST, "Collection Point not found"));
         StaffCollection staffCollection = new StaffCollection();
-        staffCollection.setName(staffRegisterDto.getName());
         staffCollection.setCollectionPoint(collectionPoint);
-        staffCollection.setPhoneNumber(staffRegisterDto.getPhoneNumber());
+
         User userStaff = new User();
+        userStaff.setFirstName(staffRegisterDto.getFirstName());
+        userStaff.setLastName(staffRegisterDto.getLastName());
+        userStaff.setPhoneNumber(staffRegisterDto.getPhoneNumber());
+        userStaff.setAddress(staffRegisterDto.getAddress());
         userStaff.setUsername(staffRegisterDto.getUsername());
         userStaff.setPassword(passwordEncoder.encode(staffRegisterDto.getPassword()));
+        
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName(Constant.roleStaffCol).get();
         roles.add(userRole);
@@ -158,6 +158,5 @@ public class AuthServiceImpl implements AuthService {
 
         return "staff Col create successfully";
     }
-
 }
 
