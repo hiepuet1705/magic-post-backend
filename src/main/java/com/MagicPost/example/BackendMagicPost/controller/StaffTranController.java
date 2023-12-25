@@ -37,7 +37,7 @@ public class StaffTranController {
                                                                      @PathVariable("colId") Long collectionId,
                                                                      @PathVariable("packageId") Long packageId,
                                                                      @PathVariable("tranId") Long transactionId) {
-        System.out.println("Oke");
+
         DeliveryReceiptTC responseDeliveryReceiptTC =  staffTranService.createDeliveryReceiptTC(deliveryReceiptDto,
                 collectionId,packageId,transactionId);
         return new ResponseEntity<>(responseDeliveryReceiptTC, HttpStatus.OK);
@@ -67,10 +67,10 @@ public class StaffTranController {
     @GetMapping("/completed-packages/{tranId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
     public ResponseEntity<List<DeliveryReceiptToReceiver>> getAllCompletedPackage(@PathVariable("tranId") Long tranId){
-            System.out.println("Okeeeeeeeeeeeeeee");
+
         List<DeliveryReceiptToReceiver> completedDeliveryReceiptToReceivers =
                 staffTranService.getAllCompletedPackage(tranId);
-            System.out.printf("Okieeeeeeeeeeeeeeeee");
+
         return new ResponseEntity<>(completedDeliveryReceiptToReceivers,HttpStatus.OK);
     }
 

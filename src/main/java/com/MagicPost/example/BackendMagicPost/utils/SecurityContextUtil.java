@@ -14,6 +14,7 @@ public class SecurityContextUtil {
 
     public static Long getCurrentUserId() {
         CustomAuthentication principal = (CustomAuthentication) SecurityContextHolder.getContext().getAuthentication();
+
         return principal.getId();
     }
 }

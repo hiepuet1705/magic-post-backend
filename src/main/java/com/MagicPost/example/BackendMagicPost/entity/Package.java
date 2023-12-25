@@ -24,11 +24,11 @@ public class Package {
     private String status = PackageStatus.AT_TRANSACTION_POINT;
 
 
-//    private String receiverFirstName;
-//    private String receiverLastName;
-//    private String receiverAddress;
-//
-//    private String receiverPhoneNumber;
+    private String receiverFirstName;
+    private String receiverLastName;
+    private String receiverAddress;
+
+    private String receiverPhoneNumber;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)

@@ -40,12 +40,12 @@ public class DeliveryReceiptTC {
 
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("transaction_ref")
     @JoinColumn(name = "transaction_id")
     private TransactionPoint transactionPointSender;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("collection_ref")
     @JoinColumn(name = "collection_id")
     private CollectionPoint collectionPointReceiver;
 

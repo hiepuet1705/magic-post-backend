@@ -10,12 +10,12 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StaffTranRegisterDto {
+public class StaffRegisterDto {
     private String name;
     private String username;
     private String password;
     private String phoneNumber;
-    private Long tranId;
+    private Long pointId;
 
 
 }

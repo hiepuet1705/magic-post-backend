@@ -5,7 +5,7 @@ import com.MagicPost.example.BackendMagicPost.payload.JwtAuthResponse;
 import com.MagicPost.example.BackendMagicPost.payload.LoginDto;
 
 
-import com.MagicPost.example.BackendMagicPost.payload.StaffTranRegisterDto;
+import com.MagicPost.example.BackendMagicPost.payload.StaffRegisterDto;
 import com.MagicPost.example.BackendMagicPost.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +42,14 @@ public class AuthController {
         return new ResponseEntity<>(response,HttpStatus.CREATED);
 
     }
-    @PostMapping("/register/staff")
-    public ResponseEntity<String> createAccountForStaffTran(@RequestBody StaffTranRegisterDto staffTranRegisterDto){
-        String response = authService.createAccountForStaffTran(staffTranRegisterDto);
+    @PostMapping("/register/staff/tran")
+    public ResponseEntity<String> createAccountForStaffTran(@RequestBody StaffRegisterDto staffRegisterDto){
+        String response = authService.createAccountForStaffTran(staffRegisterDto);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+    @PostMapping("/register/staff/col")
+    public ResponseEntity<String> createAccountForStaffCol(@RequestBody StaffRegisterDto staffRegisterDto){
+        String response = authService.createAccountForStaffCol(staffRegisterDto);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 

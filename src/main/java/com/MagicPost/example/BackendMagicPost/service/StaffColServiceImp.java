@@ -22,25 +22,48 @@ public class StaffColServiceImp implements StaffColService {
 
     private TransactionPointRepository transactionPointRepository;
 
+    private StaffCollectionRepository staffCollectionRepository;
+
+    private UserService userService;
+
     public StaffColServiceImp(DeliveryReceiptTCRepository deliveryReceiptTCRepository,
                               PackageRepository packageRepository,
                               DeliveryReceiptCCRepository deliveryReceiptCCRepository,
                               DeliveryReceiptCTRepository deliveryReceiptCTRepository,
                               CollectionPointRepository collectionPointRepository,
-                              TransactionPointRepository transactionPointRepository) {
+                              TransactionPointRepository transactionPointRepository,
+                              StaffCollectionRepository staffCollectionRepository,
+                              UserService userService) {
         this.deliveryReceiptTCRepository = deliveryReceiptTCRepository;
         this.deliveryReceiptCCRepository = deliveryReceiptCCRepository;
         this.packageRepository = packageRepository;
         this.deliveryReceiptCTRepository = deliveryReceiptCTRepository;
         this.collectionPointRepository = collectionPointRepository;
         this.transactionPointRepository = transactionPointRepository;
+        this.staffCollectionRepository = staffCollectionRepository;
+        this.userService = userService;
+
     }
 
 
     @Override
     public String confirmPackageFromTransactionPoint(Long deliveryReceiptTCId) {
+
+        // Check current user belong to collection Point or not
+//        Long currentUserId = userService.getCurrentUserId();
+
+
+        // find staff by user
+//        StaffCollection staffCollection = staffCollectionRepository.getStaffByUserId(currentUserId);
+
+       // check whether collection point == delivery point
+
         DeliveryReceiptTC deliveryReceiptTC = deliveryReceiptTCRepository.findById(deliveryReceiptTCId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Delivery Receipt not found"));
+
+//        if(!staffCollection.getCollectionPoint().getId().equals(deliveryReceiptTC.getCollectionPointReceiver().getId())){
+//            throw new CustomApiException(HttpStatus.CONFLICT,"Conflict between collection and staff");
+//        }
         Long packageId = deliveryReceiptTC.getAPackage().getId();
         Package aPackage = packageRepository.findById(packageId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));

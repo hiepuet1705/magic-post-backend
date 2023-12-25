@@ -7,11 +7,10 @@ import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.payload.LoginDto;
 
 
-import com.MagicPost.example.BackendMagicPost.payload.StaffTranRegisterDto;
+import com.MagicPost.example.BackendMagicPost.payload.StaffRegisterDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import com.MagicPost.example.BackendMagicPost.security.JwtTokenProvider;
 import com.MagicPost.example.BackendMagicPost.utils.Constant;
-import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,6 +39,8 @@ public class AuthServiceImpl implements AuthService {
 
     private TransactionPointRepository transactionPointRepository;
 
+    private CollectionPointRepository collectionPointRepository;
+
     public AuthServiceImpl(UserRepository userRepository,
                            CustomerRepository customerRepository,
                            RoleRepository roleRepository,
@@ -48,7 +49,8 @@ public class AuthServiceImpl implements AuthService {
                            JwtTokenProvider jwtTokenProvider,
                            StaffTransactionRepository staffTransactionRepository,
                            StaffCollectionRepository staffCollectionRepository,
-                           TransactionPointRepository transactionPointRepository) {
+                           TransactionPointRepository transactionPointRepository,
+                           CollectionPointRepository collectionPointRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
@@ -58,6 +60,7 @@ public class AuthServiceImpl implements AuthService {
         this.staffTransactionRepository = staffTransactionRepository;
         this.staffCollectionRepository = staffCollectionRepository;
         this.transactionPointRepository = transactionPointRepository;
+        this.collectionPointRepository = collectionPointRepository;
     }
 
     //
@@ -111,8 +114,8 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public String createAccountForStaffTran(StaffTranRegisterDto staffRegisterDto) {
-        TransactionPoint transactionPoint = transactionPointRepository.findById(staffRegisterDto.getTranId())
+    public String createAccountForStaffTran(StaffRegisterDto staffRegisterDto) {
+        TransactionPoint transactionPoint = transactionPointRepository.findById(staffRegisterDto.getPointId())
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point Not Found"));
         StaffTransaction staffTransaction = new StaffTransaction();
         staffTransaction.setName(staffRegisterDto.getName());
@@ -136,9 +139,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String createAccountForStaffCol(StaffTranRegisterDto staffRegisterDto) {
+    public String createAccountForStaffCol(StaffRegisterDto staffRegisterDto) {
+        CollectionPoint collectionPoint = collectionPointRepository.findById(staffRegisterDto.getPointId())
+                .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Collection Point not found "));
         StaffCollection staffCollection = new StaffCollection();
         staffCollection.setName(staffRegisterDto.getName());
+        staffCollection.setCollectionPoint(collectionPoint);
+        staffCollection.setPhoneNumber(staffRegisterDto.getPhoneNumber());
         User userStaff = new User();
         userStaff.setUsername(staffRegisterDto.getUsername());
         userStaff.setPassword(passwordEncoder.encode(staffRegisterDto.getPassword()));
