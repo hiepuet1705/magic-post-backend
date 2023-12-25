@@ -19,4 +19,9 @@ public class UserController {
     public ResponseEntity<User> getCurrentUser(){
         return new ResponseEntity<>(userService.getCurrentUser(), HttpStatus.OK);
     }
+    @GetMapping("/me/id")
+    public ResponseEntity<Long> getCurrentId(){
+        Long currentId = userService.getCurrentUserId();
+        return new ResponseEntity<>( currentId,HttpStatus.OK);
+    }
 }
