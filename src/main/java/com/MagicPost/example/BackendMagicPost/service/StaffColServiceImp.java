@@ -125,9 +125,11 @@ public class StaffColServiceImp implements StaffColService {
         deliveryReceiptCC.setSentPointAddress(collectionPointSender.getAddress());
         deliveryReceiptCC.setReceivePointAddress(collectionPointReceiver.getAddress());
         deliveryReceiptCC.setPackageName(aPackage.getName());
+        deliveryReceiptCC.setReceiverName(aPackage.getReceiverFirstName()+ aPackage.getReceiverLastName());
         deliveryReceiptCC.setCollectionPointSender(collectionPointSender);
         deliveryReceiptCC.setCollectionPointReceiver(collectionPointReceiver);
         deliveryReceiptCC.setAPackage(aPackage);
+        deliveryReceiptCC.setType(aPackage.getType());
         deliveryReceiptCC.setStatus(ReceiptStatus.TRANSFERING);
         DeliveryReceiptCC savedDeliveryReceiptCC =  deliveryReceiptCCRepository.save(deliveryReceiptCC);
         return savedDeliveryReceiptCC;
@@ -155,8 +157,11 @@ public class StaffColServiceImp implements StaffColService {
         deliveryReceiptCT.setReceivePointAddress(transactionPointReceiver.getAddress());
         deliveryReceiptCT.setPackageName(aPackage.getName());
         deliveryReceiptCT.setCollectionPointSender(collectionPointSender);
+        deliveryReceiptCT.setType(aPackage.getType());
         deliveryReceiptCT.setTransactionPointReceiver(transactionPointReceiver);
+        deliveryReceiptCT.setReceiverName(aPackage.getReceiverLastName() + aPackage.getReceiverLastName());
         deliveryReceiptCT.setAPackage(aPackage);
+
         deliveryReceiptCT.setStatus(ReceiptStatus.TRANSFERING);
         DeliveryReceiptCT savedDeliveryReceiptCT =  deliveryReceiptCTRepository.save(deliveryReceiptCT);
         return savedDeliveryReceiptCT;

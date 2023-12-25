@@ -9,8 +9,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+
     private UserRepository userRepository;
+
+    private SecurityContextUtil securityContextUtil;
+
+    public UserServiceImpl(UserRepository userRepository, SecurityContextUtil securityContextUtil) {
+        this.userRepository = userRepository;
+        this.securityContextUtil = securityContextUtil;
+    }
 
     @Override
     public User getCurrentUser() {
@@ -23,6 +30,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long getCurrentUserId() {
-        return SecurityContextUtil.getCurrentUserId();
+        return securityContextUtil.getCurrentUserId();
     }
 }

@@ -24,9 +24,9 @@ public class DeliveryReceiptCC {
     private String transport;
 
     private String time;
-    private String receiverName;
+    private String receiverName = "";
 
-    private String type;
+    private String type ="";
 
     private String status = ReceiptStatus.NOT_ARRIVE;
     @Transient
@@ -37,17 +37,16 @@ public class DeliveryReceiptCC {
     @Transient
     private String packageName;
 
-
     @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "collection_id1")
+    @JsonBackReference("collection_sender_ref")
+    @JoinColumn(name = "collection_id_sent")
     private CollectionPoint collectionPointSender;
 
 
 
     @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "collection_id2")
+    @JsonBackReference("collection_receiver_ref")
+    @JoinColumn(name = "collection_id_receive")
     private CollectionPoint collectionPointReceiver;
 
     @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})

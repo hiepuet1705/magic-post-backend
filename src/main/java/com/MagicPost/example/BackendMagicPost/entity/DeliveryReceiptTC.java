@@ -25,9 +25,10 @@ public class DeliveryReceiptTC {
     private String transport;
 
     private String time;
-    private String receiverName;
+    private String receiverName="";
 
-    private String type;
+
+    private String type="";
 
     private String status = ReceiptStatus.NOT_ARRIVE;
     @Transient

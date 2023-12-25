@@ -24,9 +24,9 @@ public class DeliveryReceiptCT {
     private String transport;
 
     private String time;
-    private String receiverName;
+    private String receiverName="";
 
-    private String type;
+    private String type="";
 
     private String status = ReceiptStatus.NOT_ARRIVE;
     @Transient
@@ -39,12 +39,12 @@ public class DeliveryReceiptCT {
 
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("col_sent")
     @JoinColumn(name = "collection_id")
     private CollectionPoint collectionPointSender;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("tran_receive")
     @JoinColumn(name = "transaction_id")
     private TransactionPoint transactionPointReceiver;
 

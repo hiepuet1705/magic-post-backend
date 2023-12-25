@@ -107,7 +107,9 @@ public class StaffTranServiceImp implements StaffTranService {
         deliveryReceiptTC.setTransactionPointSender(transactionPoint);
         deliveryReceiptTC.setCollectionPointReceiver(collectionPoint);
         deliveryReceiptTC.setAPackage(aPackage);
+        deliveryReceiptTC.setReceiverName(aPackage.getReceiverFirstName() + aPackage.getReceiverLastName());
         deliveryReceiptTC.setStatus(ReceiptStatus.TRANSFERING);
+        deliveryReceiptTC.setType(aPackage.getType());
         DeliveryReceiptTC savedDeliveryReceiptTC =  deliveryReceiptTCRepository.save(deliveryReceiptTC);
         return savedDeliveryReceiptTC;
     }
@@ -150,6 +152,8 @@ public class StaffTranServiceImp implements StaffTranService {
         deliveryReceiptToReceiver.setStatus(ReceiptStatus.TRANSFERING);
         deliveryReceiptToReceiver.setTransactionPointSender(transactionPoint);
         deliveryReceiptToReceiver.setSentPointAddress(transactionPoint.getAddress());
+        deliveryReceiptToReceiver.setReceiverName(aPackage.getReceiverFirstName()+aPackage.getReceiverLastName());
+        deliveryReceiptToReceiver.setReceiverPhoneNumber(aPackage.getReceiverPhoneNumber());
         deliveryReceiptToReceiver.setPackageName(aPackage.getName());
         DeliveryReceiptToReceiver savedReceipt = deliveryReceiptToReceiverRepository.save(deliveryReceiptToReceiver);
         return savedReceipt;

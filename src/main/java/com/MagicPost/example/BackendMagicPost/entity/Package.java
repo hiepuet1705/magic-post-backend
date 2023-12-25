@@ -21,6 +21,7 @@ public class Package {
     private int weight;
     private String name;
     private String description;
+    private String type;
     private String status = PackageStatus.AT_TRANSACTION_POINT;
 
 
