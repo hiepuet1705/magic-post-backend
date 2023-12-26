@@ -21,7 +21,7 @@ public class StaffTranController {
         this.staffTranService = staffTranService;
     }
 
-    @PostMapping("/package/{customerId}/")
+    @PostMapping("/package/{customerId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
     public ResponseEntity<Package> createPackage(@RequestBody Package aPackage,
                                                  @PathVariable("customerId") Long customerId
@@ -30,12 +30,11 @@ public class StaffTranController {
         return new ResponseEntity<>(savedPackage,HttpStatus.OK);
 
     }
-    @PostMapping("/customer-receipt/{customerId}/{packageId}")
+    @PostMapping("/customer-receipt/{packageId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<CustomerReceipt> createCustomerReceipt(@PathVariable("customerId") Long CustomerId,
-                                                                 @PathVariable("packageId") Long packageId,
+    public ResponseEntity<CustomerReceipt> createCustomerReceipt(@PathVariable("packageId") Long packageId,
                                                                  @RequestBody CustomerReceipt customerReceipt) {
-            CustomerReceipt responseCustomerReceipt =  staffTranService.createCustomerReceipt(CustomerId,packageId, customerReceipt);
+            CustomerReceipt responseCustomerReceipt =  staffTranService.createCustomerReceipt(packageId, customerReceipt);
             return new ResponseEntity<>(responseCustomerReceipt, HttpStatus.OK);
     }
 

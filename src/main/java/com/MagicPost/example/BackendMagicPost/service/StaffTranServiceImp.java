@@ -83,20 +83,23 @@ public class StaffTranServiceImp implements StaffTranService {
     }
 
     @Override
-    public CustomerReceipt createCustomerReceipt(Long CustomerId,
-                                                 Long packageId, CustomerReceipt customerReceipt) {
+    public CustomerReceipt createCustomerReceipt(Long packageId, CustomerReceipt customerReceipt) {
 
-        Customer customer = customerRepository.findById(CustomerId)
-                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Customer not found"));
+
         Package aPackage = packageRepository.findById(packageId).
                 orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"package not found"));
-        TransactionPoint transactionPoint = transactionPointRepository.findById(getTranPointIdOfCurrentStaff()).
-                orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"transaction Point not found"));
+        Customer customer = aPackage.getSender();
+        Long tranPointId = getTranPointIdOfCurrentStaff();
+        TransactionPoint transactionPoint = transactionPointRepository.findById(tranPointId).get();
         customerReceipt.setCustomerSender(customer);
         customerReceipt.setAPackage(aPackage);
+        customerReceipt.setName(aPackage.getName());
+        customerReceipt.setDescription(aPackage.getDescription());
         customerReceipt.setTransactionPointReceive(transactionPoint);
         customerReceipt.setSenderName(customer.getUser().getFirstName()+customer.getUser().getLastName());
         customerReceipt.setSenderPhoneNumber(customer.getUser().getPhoneNumber());
+        customerReceipt.setReceiverName(aPackage.getReceiverFirstName() + aPackage.getReceiverLastName());
+        customerReceipt.setReceiverPhoneNumber(aPackage.getReceiverPhoneNumber());
         CustomerReceipt customerReceipt1 =  customerReceiptRepository.save(customerReceipt);
         return customerReceipt1;
     }

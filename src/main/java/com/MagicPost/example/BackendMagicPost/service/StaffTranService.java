@@ -12,7 +12,7 @@ public interface StaffTranService {
     Package createPackage(Package aPackage,Long customerId);
 
     Long getTranPointIdOfCurrentStaff();
-    public CustomerReceipt createCustomerReceipt(Long CustomerId,Long packageId, CustomerReceipt customerReceiptDto);
+    public CustomerReceipt createCustomerReceipt(Long packageId, CustomerReceipt customerReceiptDto);
 
 
     // need to update

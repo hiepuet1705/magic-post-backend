@@ -29,22 +29,22 @@ public class CustomerReceipt {
     private String description = "";
     private String time = "00:00";
     private int weight = 0 ;
-    private String receiverName;
-    private String receiverPhoneNumber;
+    private String receiverName="";
+    private String receiverPhoneNumber="";
 
-    private double fee;
+    private String fee="";
 
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "customer_id")
     private Customer customerSender;
 
-    @ManyToOne
-//    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "transaction_id")
     private TransactionPoint transactionPointReceive;
 
-    @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinColumn(name = "package_id")
     @JsonIgnore
     private Package aPackage;
