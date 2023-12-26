@@ -49,7 +49,7 @@ public class StaffTranController {
         return new ResponseEntity<>(responseDeliveryReceiptTC, HttpStatus.OK);
     }
 
-    @PostMapping("/receipt-to-receiver/{packageId}/")
+    @PostMapping("/receipt-to-receiver/{packageId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
     public ResponseEntity<DeliveryReceiptToReceiver> createReceiptToReceiver(@RequestBody DeliveryReceiptToReceiver deliveryReceiptToReceiver,
                                                  @PathVariable("packageId") Long packageId
@@ -73,7 +73,7 @@ public class StaffTranController {
     public ResponseEntity<String> confirmShippedToReceiver(@PathVariable("deliveryRToReceiverId") Long deliveryRToReceiverId
     ){
 
-        String confirm = staffTranService.confirmReceiptFromCollectionPoint(deliveryRToReceiverId);
+        String confirm = staffTranService.confirmShippedToReceiver(deliveryRToReceiverId);
         return new ResponseEntity<>(confirm,HttpStatus.OK);
 
     }

@@ -1,6 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class User {
 
     @Column(nullable = false, unique = true)
     // validation
+    @Email
     private String username;
     @Column(nullable = false)
     private String password;

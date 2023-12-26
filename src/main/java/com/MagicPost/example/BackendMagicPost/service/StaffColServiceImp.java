@@ -163,7 +163,7 @@ public class StaffColServiceImp implements StaffColService {
         deliveryReceiptCT.setCollectionPointSender(collectionPointSender);
         deliveryReceiptCT.setType(aPackage.getType());
         deliveryReceiptCT.setTransactionPointReceiver(transactionPointReceiver);
-        deliveryReceiptCT.setReceiverName(aPackage.getReceiverLastName() + aPackage.getReceiverLastName());
+        deliveryReceiptCT.setReceiverName(aPackage.getReceiverFirstName() + aPackage.getReceiverLastName());
         deliveryReceiptCT.setAPackage(aPackage);
 
         deliveryReceiptCT.setStatus(ReceiptStatus.TRANSFERING);

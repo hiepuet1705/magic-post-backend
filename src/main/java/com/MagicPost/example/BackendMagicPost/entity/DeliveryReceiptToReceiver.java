@@ -24,8 +24,8 @@ public class DeliveryReceiptToReceiver {
     private String transport;
 
     private String time;
-    private String receiverName;
-    private String receiverPhoneNumber;
+    private String receiverName="";
+    private String receiverPhoneNumber="";
 
     private String type="";
 
