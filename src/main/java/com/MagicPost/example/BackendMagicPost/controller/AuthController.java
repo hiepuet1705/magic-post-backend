@@ -47,6 +47,8 @@ public class AuthController {
         String response = authService.createAccountForStaffTran(staffRegisterDto);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
+
+
     @PostMapping("/register/staff/col")
     public ResponseEntity<String> createAccountForStaffCol(@RequestBody StaffRegisterDto staffRegisterDto){
         String response = authService.createAccountForStaffCol(staffRegisterDto);

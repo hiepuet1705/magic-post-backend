@@ -3,11 +3,13 @@ package com.MagicPost.example.BackendMagicPost.service;
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
+import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,14 +36,33 @@ public class BossServiceImp implements BossService{
     }
 
     @Override
-    public List<CollectionPoint> getAllCollectionPoints() {
+    public List<PointDto> getAllCollectionPoints() {
         List<CollectionPoint> collectionPoints =  collectionPointRepository.findAll();
-        return collectionPoints;
+        List<PointDto> pointDtos = new ArrayList<>();
+        for(CollectionPoint cl : collectionPoints){
+            PointDto pointDto = new PointDto();
+            pointDto.setId(cl.getId());
+            pointDto.setName(cl.getName());
+            pointDto.setAddress(cl.getAddress());
+            pointDtos.add(pointDto);
+        }
+
+        return pointDtos;
     }
 
     @Override
-    public List<TransactionPoint> getAllTransactionPoints() {
-        return transactionPointRepository.findAll();
+    public List<PointDto> getAllTransactionPoints() {
+        List<TransactionPoint> transactionPoints =  transactionPointRepository.findAll();
+        List<PointDto> pointDtos = new ArrayList<>();
+        for(TransactionPoint transactionPoint : transactionPoints){
+            PointDto pointDto = new PointDto();
+            pointDto.setId(transactionPoint.getId());
+            pointDto.setName(transactionPoint.getName());
+            pointDto.setAddress(transactionPoint.getAddress());
+            pointDtos.add(pointDto);
+        }
+
+        return pointDtos;
     }
 
     @Override

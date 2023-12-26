@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class CollectionPointDto {
+public class PointDto {
     private Long id;
     private String name;
     private String address;

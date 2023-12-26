@@ -6,6 +6,8 @@ import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptCT;
 public interface StaffColService {
     public String confirmPackageFromTransactionPoint(Long deliveryReceiptTCId);
 
+    Long getColPointIdOfCurrentStaff();
+
     public String confirmPackageFromOtherCollectionPoint(Long deliveryReceiptCCId);
 
     public DeliveryReceiptCC createDeliveryReceiptCC(DeliveryReceiptCC deliveryReceiptCC,

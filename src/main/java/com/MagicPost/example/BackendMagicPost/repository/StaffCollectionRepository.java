@@ -10,6 +10,6 @@ public interface StaffCollectionRepository extends JpaRepository<StaffCollection
     @Query("SELECT s FROM StaffCollection s WHERE s.isManager = true AND s.collectionPoint.id = :colId")
     public StaffCollection getStaffByIsManager(@Param("colId") Long colId);
 
-    @Query("SELECT s FROM StaffCollection s WHERE s.isManager = true AND s.user.id = :userId")
+    @Query("SELECT s FROM StaffCollection s WHERE s.user.id = :userId")
     public StaffCollection getStaffByUserId(@Param("userId") Long userId);
 }

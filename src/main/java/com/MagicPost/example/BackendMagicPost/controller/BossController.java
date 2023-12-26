@@ -2,6 +2,7 @@ package com.MagicPost.example.BackendMagicPost.controller;
 
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
+import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 import com.MagicPost.example.BackendMagicPost.service.BossService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +24,14 @@ public class BossController {
     }
     @GetMapping("/col-points")
     @PreAuthorize("hasRole('BOSS')")
-    public ResponseEntity<List<CollectionPoint>>  getAllCollectionPoints(){
-        List<CollectionPoint> collectionPoints = bossService.getAllCollectionPoints();
+    public ResponseEntity<List<PointDto>>  getAllCollectionPoints(){
+        List<PointDto> collectionPoints = bossService.getAllCollectionPoints();
         return new ResponseEntity<>(collectionPoints, HttpStatus.OK);
     }
     @GetMapping("/tran-points")
     @PreAuthorize("hasRole('BOSS')")
-    public ResponseEntity<List<TransactionPoint>>  getAllTransactionPoints(){
-        List<TransactionPoint> transactionPoints = bossService.getAllTransactionPoints();
+    public ResponseEntity<List<PointDto>>  getAllTransactionPoints(){
+        List<PointDto> transactionPoints = bossService.getAllTransactionPoints();
         return new ResponseEntity<>(transactionPoints, HttpStatus.OK);
     }
     @GetMapping("/tran-point/{id}/manger")

@@ -31,6 +31,8 @@ public class StaffTranServiceImp implements StaffTranService {
 
     private DeliveryReceiptToReceiverRepository deliveryReceiptToReceiverRepository;
 
+    private UserService userService;
+
 
     public StaffTranServiceImp(StaffTransactionRepository staffTransactionRepository,
                                 CustomerRepository customerRepository,
@@ -40,7 +42,8 @@ public class StaffTranServiceImp implements StaffTranService {
                                TransactionPointRepository transactionPointRepository,
                                DeliveryReceiptCTRepository deliveryReceiptCTRepository,
                                DeliveryReceiptToReceiverRepository deliveryReceiptToReceiverRepository,
-                               PackageRepository packageRepository
+                               PackageRepository packageRepository,
+                               UserService userService
                                 ) {
         this.staffTransactionRepository = staffTransactionRepository;
         this.customerRepository = customerRepository;
@@ -51,14 +54,18 @@ public class StaffTranServiceImp implements StaffTranService {
         this.deliveryReceiptCTRepository = deliveryReceiptCTRepository;
         this.packageRepository = packageRepository;
         this.deliveryReceiptToReceiverRepository = deliveryReceiptToReceiverRepository;
+        this.userService = userService;
     }
 
     @Override
-    public Package createPackage(Package aPackage,Long customerId,Long tranId) {
+    public Package createPackage(Package aPackage,Long customerId) {
+        //
+        Long transactionPointId = getTranPointIdOfCurrentStaff();
+
         Customer customer = customerRepository.findById(customerId).
                 orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Customer not found"));
         aPackage.setSender(customer);
-        aPackage.setTransactionPoint(tranId);
+        aPackage.setTransactionPoint(transactionPointId);
         aPackage.setCollectionPoint(0L);
         aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
         Package savedPackage = packageRepository.save(aPackage);
@@ -66,12 +73,23 @@ public class StaffTranServiceImp implements StaffTranService {
     }
 
     @Override
-    public CustomerReceipt createCustomerReceipt(Long CustomerId,Long packageId,Long tranId, CustomerReceipt customerReceipt) {
+    public Long getTranPointIdOfCurrentStaff() {
+        Long currentUserId = userService.getCurrentUserId();
+        // find Staff find userId;
+        StaffTransaction staffTransaction = staffTransactionRepository.getStaffByUserId(currentUserId);
+
+        //
+        return staffTransaction.getTransactionPoint().getId();
+    }
+
+    @Override
+    public CustomerReceipt createCustomerReceipt(Long CustomerId,
+                                                 Long packageId, CustomerReceipt customerReceipt) {
         Customer customer = customerRepository.findById(CustomerId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Customer not found"));
         Package aPackage = packageRepository.findById(packageId).
                 orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"package not found"));
-        TransactionPoint transactionPoint = transactionPointRepository.findById(tranId).
+        TransactionPoint transactionPoint = transactionPointRepository.findById(getTranPointIdOfCurrentStaff()).
                 orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"transaction Point not found"));
         customerReceipt.setCustomerSender(customer);
         customerReceipt.setAPackage(aPackage);
@@ -86,10 +104,11 @@ public class StaffTranServiceImp implements StaffTranService {
 
     @Override
     public DeliveryReceiptTC createDeliveryReceiptTC(DeliveryReceiptTC deliveryReceiptTC,
-                                                     Long collectionPointId, Long packageId, Long transactionPointId) {
+                                                     Long collectionPointId, Long packageId) {
+        Long currentStaffTranPoint = getTranPointIdOfCurrentStaff();
         CollectionPoint collectionPoint = collectionPointRepository.findById(collectionPointId).
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Collection Point not found"));
-        TransactionPoint transactionPoint = transactionPointRepository.findById(transactionPointId).
+        TransactionPoint transactionPoint = transactionPointRepository.findById(currentStaffTranPoint).
                orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point Not Found"));
         Package aPackage = packageRepository.findById(packageId).
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package Not found"));
@@ -98,8 +117,8 @@ public class StaffTranServiceImp implements StaffTranService {
         aPackage.setStatus(PackageStatus.TRANSFERING);
 
         // Xac nhan thi moi sua
-//        aPackage.setCollectionPoint(collectionPointId);
-//        aPackage.setTransactionPoint(0L);
+        aPackage.setCollectionPoint(collectionPointId);
+        aPackage.setTransactionPoint(0L);
 
         deliveryReceiptTC.setSentPointAddress(transactionPoint.getAddress());
         deliveryReceiptTC.setReceivePointAddress(collectionPoint.getAddress());
@@ -119,6 +138,11 @@ public class StaffTranServiceImp implements StaffTranService {
 
         DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.findById(deliveryCTId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"ReceiptCT not found"));
+        if(!deliveryReceiptCT.getTransactionPointReceiver().getId()
+                .equals(getTranPointIdOfCurrentStaff())){
+            throw  new CustomApiException(HttpStatus.CONFLICT,"Conflict between staff and tranPoint");
+
+        }
         Long packageId = deliveryReceiptCT.getAPackage().getId();
         Package aPackage = packageRepository.findById(packageId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
@@ -142,12 +166,16 @@ public class StaffTranServiceImp implements StaffTranService {
 
     @Override
     public DeliveryReceiptToReceiver createReceiptToReceiver(DeliveryReceiptToReceiver deliveryReceiptToReceiver,
-                                                             Long transactionPointId, Long packageId) {
-        TransactionPoint transactionPoint = transactionPointRepository.findById(transactionPointId).
+                                                              Long packageId) {
+        TransactionPoint transactionPoint = transactionPointRepository.findById(getTranPointIdOfCurrentStaff()).
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point Not Found"));
         Package aPackage = packageRepository.findById(packageId).
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package Not found"));
         aPackage.setStatus(PackageStatus.TRANSFERING);
+//        aPackage.setCollectionPoint(0L);
+//        aPackage.setTransactionPoint(0L);
+
+
         deliveryReceiptToReceiver.setAPackage(aPackage);
         deliveryReceiptToReceiver.setStatus(ReceiptStatus.TRANSFERING);
         deliveryReceiptToReceiver.setTransactionPointSender(transactionPoint);

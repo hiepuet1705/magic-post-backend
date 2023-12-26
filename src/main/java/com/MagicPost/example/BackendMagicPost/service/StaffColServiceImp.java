@@ -83,6 +83,16 @@ public class StaffColServiceImp implements StaffColService {
     }
 
     @Override
+    public Long getColPointIdOfCurrentStaff() {
+        Long currentUserId = userService.getCurrentUserId();
+        // find Staff find userId;
+        StaffCollection staffCollection = staffCollectionRepository.getStaffByUserId(currentUserId);
+
+        //
+        return staffCollection.getCollectionPoint().getId();
+    }
+
+    @Override
     public String confirmPackageFromOtherCollectionPoint(Long deliveryReceiptCCId) {
         DeliveryReceiptCC deliveryReceiptCC = deliveryReceiptCCRepository.findById(deliveryReceiptCCId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Delivery Receipt not found"));

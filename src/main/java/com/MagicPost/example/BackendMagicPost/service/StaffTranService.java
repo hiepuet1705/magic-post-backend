@@ -9,19 +9,20 @@ import java.util.List;
 
 public interface StaffTranService {
 
-    Package createPackage(Package aPackage,Long customerId,Long tranId);
-    public CustomerReceipt createCustomerReceipt(Long CustomerId,Long packageId,Long tranId, CustomerReceipt customerReceiptDto);
+    Package createPackage(Package aPackage,Long customerId);
+
+    Long getTranPointIdOfCurrentStaff();
+    public CustomerReceipt createCustomerReceipt(Long CustomerId,Long packageId, CustomerReceipt customerReceiptDto);
 
 
     // need to update
     public DeliveryReceiptTC createDeliveryReceiptTC(DeliveryReceiptTC deliveryReceiptTC,
-                                                     Long collectionPointId, Long packageId, Long transactionPointId);
+                                                     Long collectionPointId, Long packageId);
 
 
     public String confirmReceiptFromCollectionPoint(Long deliveryCTId);
 
     public DeliveryReceiptToReceiver createReceiptToReceiver(DeliveryReceiptToReceiver deliveryReceiptToReceiver,
-                                                             Long transactionPointId,
                                                              Long packageId
                         );
     public String confirmShippedToReceiver(Long deliveryRToReceiverId);

@@ -2,13 +2,14 @@ package com.MagicPost.example.BackendMagicPost.service;
 
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
+import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 
 import java.util.List;
 
 public interface BossService {
-    public List<CollectionPoint> getAllCollectionPoints();
+    public List<PointDto> getAllCollectionPoints();
 
-    public List<TransactionPoint> getAllTransactionPoints();
+    public List<PointDto> getAllTransactionPoints();
 
     public StaffTransaction getManagerOfATranPoint(Long tranId);
 
