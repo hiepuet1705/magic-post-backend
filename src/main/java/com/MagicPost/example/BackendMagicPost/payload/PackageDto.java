@@ -25,6 +25,8 @@ public class PackageDto {
     private String receiverPhoneNumber;
     private String hashKey="";
 
+    private UserDto userDto;
+
     private Long transactionPoint = 0L;
 
     private Long collectionPoint = 0L;

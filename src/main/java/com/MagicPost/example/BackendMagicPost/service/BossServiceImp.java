@@ -84,6 +84,17 @@ public class BossServiceImp implements BossService{
             packageDto.setHashKey(aPackage.getHashKey());
             packageDto.setCollectionPoint(aPackage.getCollectionPoint());
             packageDto.setTransactionPoint(aPackage.getTransactionPoint());
+
+            UserDto userDto = new UserDto();
+            User user = aPackage.getSender().getUser();
+            userDto.setId(user.getId());
+            userDto.setLastName(user.getLastName());
+            userDto.setFirstName(user.getFirstName());
+            userDto.setAddress(user.getAddress());
+            userDto.setPhoneNumber(user.getPhoneNumber());
+            userDto.setUsername(user.getUsername());
+            userDto.setPassword(user.getPassword());
+            packageDto.setUserDto(userDto);
             PointDto pointDto = new PointDto();
             if(aPackage.getCollectionPoint()!=0L){
 
