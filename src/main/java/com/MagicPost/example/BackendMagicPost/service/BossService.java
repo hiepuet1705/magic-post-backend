@@ -2,6 +2,7 @@ package com.MagicPost.example.BackendMagicPost.service;
 
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
+import com.MagicPost.example.BackendMagicPost.payload.PackageDto;
 import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public interface BossService {
     public List<PointDto> getAllCollectionPoints();
 
     public List<PointDto> getAllTransactionPoints();
+
+    public List<PackageDto> getAllPackages();
 
     public StaffTransaction getManagerOfATranPoint(Long tranId);
 

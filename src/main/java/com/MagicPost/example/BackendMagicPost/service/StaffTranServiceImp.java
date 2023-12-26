@@ -8,6 +8,7 @@ import com.MagicPost.example.BackendMagicPost.repository.*;
 import com.MagicPost.example.BackendMagicPost.utils.PackageStatus;
 import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +34,8 @@ public class StaffTranServiceImp implements StaffTranService {
 
     private UserService userService;
 
+    private PasswordEncoder passwordEncoder;
+
 
     public StaffTranServiceImp(StaffTransactionRepository staffTransactionRepository,
                                 CustomerRepository customerRepository,
@@ -43,7 +46,8 @@ public class StaffTranServiceImp implements StaffTranService {
                                DeliveryReceiptCTRepository deliveryReceiptCTRepository,
                                DeliveryReceiptToReceiverRepository deliveryReceiptToReceiverRepository,
                                PackageRepository packageRepository,
-                               UserService userService
+                               UserService userService,
+                               PasswordEncoder passwordEncoder
                                 ) {
         this.staffTransactionRepository = staffTransactionRepository;
         this.customerRepository = customerRepository;
@@ -55,6 +59,7 @@ public class StaffTranServiceImp implements StaffTranService {
         this.packageRepository = packageRepository;
         this.deliveryReceiptToReceiverRepository = deliveryReceiptToReceiverRepository;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -68,6 +73,9 @@ public class StaffTranServiceImp implements StaffTranService {
         aPackage.setTransactionPoint(transactionPointId);
         aPackage.setCollectionPoint(0L);
         aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
+        String pkKey =  passwordEncoder.encode
+                (aPackage.getName() + aPackage.getId()).replaceAll("[$./]", "").substring(0,12);
+        aPackage.setHashKey(pkKey);
         Package savedPackage = packageRepository.save(aPackage);
         return savedPackage;
     }

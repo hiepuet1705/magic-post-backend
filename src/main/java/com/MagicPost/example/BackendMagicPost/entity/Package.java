@@ -28,6 +28,9 @@ public class Package {
     private String receiverAddress;
     private String receiverPhoneNumber;
 
+    @Column(unique = true)
+    private String hashKey="";
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn( name = "sender_id")

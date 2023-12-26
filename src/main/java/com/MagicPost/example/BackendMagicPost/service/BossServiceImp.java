@@ -3,6 +3,7 @@ package com.MagicPost.example.BackendMagicPost.service;
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
+import com.MagicPost.example.BackendMagicPost.payload.PackageDto;
 import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,51 @@ public class BossServiceImp implements BossService{
         }
 
         return pointDtos;
+    }
+
+    @Override
+    public List<PackageDto> getAllPackages() {
+        List<Package> packages = packageRepository.findAll();
+        List<PackageDto> packageDtoList = new ArrayList<>();
+        for(Package aPackage : packages){
+            PackageDto packageDto = new PackageDto();
+            packageDto.setId(aPackage.getId());
+            packageDto.setWeight(aPackage.getWeight());
+            packageDto.setName(aPackage.getName());
+            packageDto.setDescription(aPackage.getDescription());
+            packageDto.setType(aPackage.getType());
+            packageDto.setStatus(aPackage.getStatus());
+            packageDto.setReceiverFirstName(aPackage.getReceiverFirstName());
+            packageDto.setReceiverLastName(aPackage.getReceiverLastName());
+            packageDto.setReceiverAddress(aPackage.getReceiverAddress());
+            packageDto.setReceiverPhoneNumber(aPackage.getReceiverPhoneNumber());
+            packageDto.setHashKey(aPackage.getHashKey());
+            packageDto.setCollectionPoint(aPackage.getCollectionPoint());
+            packageDto.setTransactionPoint(aPackage.getTransactionPoint());
+            PointDto pointDto = new PointDto();
+            if(aPackage.getCollectionPoint()!=0L){
+
+                CollectionPoint collectionPoint = collectionPointRepository.
+                        findById(aPackage.getCollectionPoint()).
+                        orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Collection not found"));
+                pointDto.setId(collectionPoint.getId());
+                pointDto.setName(collectionPoint.getName());
+                pointDto.setAddress(collectionPoint.getAddress());
+            }
+            else {
+                TransactionPoint transactionPoint = transactionPointRepository.
+                        findById(aPackage.getTransactionPoint()).
+                        orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Collection not found"));
+                pointDto.setId(transactionPoint.getId());
+                pointDto.setName(transactionPoint.getName());
+                pointDto.setAddress(transactionPoint.getAddress());
+            }
+            packageDto.setPointDto(pointDto);
+            packageDtoList.add(packageDto);
+
+
+        }
+        return packageDtoList;
     }
 
     @Override
