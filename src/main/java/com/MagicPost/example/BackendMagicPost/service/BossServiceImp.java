@@ -16,13 +16,10 @@ import java.util.List;
 public class BossServiceImp implements BossService{
     private CollectionPointRepository collectionPointRepository;
     private TransactionPointRepository transactionPointRepository;
-
     private StaffTransactionRepository staffTransactionRepository;
     private StaffCollectionRepository staffCollectionRepository;
-
     private PackageRepository packageRepository;
 
-    @Autowired
     public BossServiceImp(CollectionPointRepository collectionPointRepository,
                           TransactionPointRepository transactionPointRepository,
                           StaffTransactionRepository staffTransactionRepository,
@@ -116,6 +113,4 @@ public class BossServiceImp implements BossService{
         List<StaffCollection> listStaff = collectionPoint.getStaffCollections().stream().toList();
         return listStaff;
     }
-
-
 }
