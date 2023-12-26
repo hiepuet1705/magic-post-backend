@@ -75,7 +75,7 @@ public class StaffTranServiceImp implements StaffTranService {
     @Override
     public Long getTranPointIdOfCurrentStaff() {
         Long currentUserId = userService.getCurrentUserId();
-        // find Staff find userId;
+
         StaffTransaction staffTransaction = staffTransactionRepository.getStaffByUserId(currentUserId);
 
         //
@@ -85,6 +85,7 @@ public class StaffTranServiceImp implements StaffTranService {
     @Override
     public CustomerReceipt createCustomerReceipt(Long CustomerId,
                                                  Long packageId, CustomerReceipt customerReceipt) {
+
         Customer customer = customerRepository.findById(CustomerId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Customer not found"));
         Package aPackage = packageRepository.findById(packageId).
@@ -116,7 +117,7 @@ public class StaffTranServiceImp implements StaffTranService {
         // Update package
         aPackage.setStatus(PackageStatus.TRANSFERING);
 
-        // Xac nhan thi moi sua
+        //
         aPackage.setCollectionPoint(collectionPointId);
         aPackage.setTransactionPoint(0L);
 
@@ -172,14 +173,16 @@ public class StaffTranServiceImp implements StaffTranService {
         Package aPackage = packageRepository.findById(packageId).
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package Not found"));
         aPackage.setStatus(PackageStatus.TRANSFERING);
-//        aPackage.setCollectionPoint(0L);
-//        aPackage.setTransactionPoint(0L);
+
+        aPackage.setCollectionPoint(0L);
+        aPackage.setTransactionPoint(0L);
 
 
         deliveryReceiptToReceiver.setAPackage(aPackage);
         deliveryReceiptToReceiver.setStatus(ReceiptStatus.TRANSFERING);
         deliveryReceiptToReceiver.setTransactionPointSender(transactionPoint);
         deliveryReceiptToReceiver.setSentPointAddress(transactionPoint.getAddress());
+        deliveryReceiptToReceiver.setType(aPackage.getType());
         deliveryReceiptToReceiver.setReceiverName(aPackage.getReceiverFirstName()+aPackage.getReceiverLastName());
         deliveryReceiptToReceiver.setReceiverPhoneNumber(aPackage.getReceiverPhoneNumber());
         deliveryReceiptToReceiver.setPackageName(aPackage.getName());
@@ -195,7 +198,7 @@ public class StaffTranServiceImp implements StaffTranService {
 
         // Update Status Of Package
         Package aPackage =  deliveryReceiptToReceiver.getAPackage();
-        aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
+        aPackage.setStatus(PackageStatus.SHIP_DONE);
         aPackage.setCollectionPoint(0L);
         aPackage.setTransactionPoint(0L);
         packageRepository.save(aPackage);
@@ -208,12 +211,16 @@ public class StaffTranServiceImp implements StaffTranService {
     public String confirmShippedUncompletedToReceiver(Long deliveryRToReceiverId) {
         DeliveryReceiptToReceiver deliveryReceiptToReceiver = deliveryReceiptToReceiverRepository.findById(deliveryRToReceiverId)
                 .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Receipt to receiver not found"));
-        if(deliveryReceiptToReceiver.getStatus().equals(ReceiptStatus.TRANSFERED) ){
-            deliveryReceiptToReceiver.setStatus(ReceiptStatus.UNCOMPLETED);
-            deliveryReceiptToReceiverRepository.save(deliveryReceiptToReceiver);
-            return "Incompleted transfer to Receiver ";
-        }
-        return "Cannot confirm Incompleted";
+        deliveryReceiptToReceiver.setStatus(ReceiptStatus.UNCOMPLETED);
+        Package aPackage =  deliveryReceiptToReceiver.getAPackage();
+        aPackage.setStatus(PackageStatus.RETURNED_TO_TRANSACTION_POINT);
+        aPackage.setCollectionPoint(0L);
+        aPackage.setTransactionPoint(deliveryReceiptToReceiver.getTransactionPointSender().getId());
+
+        packageRepository.save(aPackage);
+        deliveryReceiptToReceiverRepository.save(deliveryReceiptToReceiver);
+        return "Package is returned to transaction Point";
+
     }
 
     @Override

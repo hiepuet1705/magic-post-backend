@@ -7,12 +7,14 @@ import java.util.List;
 
 public interface TranManagerService {
     public TransactionPoint getTransactionPointByManagerId(Long managerId);
-    public List<Package> getSentPackageInATransactionPoint(Long TranPointId);
 
-    public List<Package> getCurrentPackagesInATransactionPoint(Long TranPointId);
+    Long getTranPointIdOfCurrentStaff();
+    public List<Package> getSentPackageInATransactionPoint();
+
+    public List<Package> getCurrentPackagesInATransactionPoint();
 
 
 
-    public List<Package> getReceivePackagesInATransactionPoint(Long tranPointId);
+    public List<Package> getReceivePackagesInATransactionPoint();
 
 }

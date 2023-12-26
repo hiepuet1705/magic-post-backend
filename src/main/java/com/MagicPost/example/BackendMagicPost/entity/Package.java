@@ -23,12 +23,9 @@ public class Package {
     private String description;
     private String type;
     private String status = PackageStatus.AT_TRANSACTION_POINT;
-
-
     private String receiverFirstName;
     private String receiverLastName;
     private String receiverAddress;
-
     private String receiverPhoneNumber;
 
     @JsonBackReference

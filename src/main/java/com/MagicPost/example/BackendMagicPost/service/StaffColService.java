@@ -11,12 +11,10 @@ public interface StaffColService {
     public String confirmPackageFromOtherCollectionPoint(Long deliveryReceiptCCId);
 
     public DeliveryReceiptCC createDeliveryReceiptCC(DeliveryReceiptCC deliveryReceiptCC,
-                                                     Long collectionPointSenderId,
                                                      Long collectionPointReceiverId,
                                                      Long packageId);
 
     public DeliveryReceiptCT createDeliveryReceiptCT(DeliveryReceiptCT deliveryReceiptCT,
-                                                     Long collectionPointSenderId,
                                                      Long transactionPointReceiverId,
                                                      Long packageId);
 

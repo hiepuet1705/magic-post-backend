@@ -20,11 +20,11 @@ public interface StaffTranService {
                                                      Long collectionPointId, Long packageId);
 
 
-    public String confirmReceiptFromCollectionPoint(Long deliveryCTId);
+
 
     public DeliveryReceiptToReceiver createReceiptToReceiver(DeliveryReceiptToReceiver deliveryReceiptToReceiver,
-                                                             Long packageId
-                        );
+                                                             Long packageId);
+    public String confirmReceiptFromCollectionPoint(Long deliveryCTId);
     public String confirmShippedToReceiver(Long deliveryRToReceiverId);
     public String confirmShippedUncompletedToReceiver(Long deliveryRToReceiverId);
 

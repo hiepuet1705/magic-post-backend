@@ -10,6 +10,6 @@ import java.util.List;
 public interface CustomerReceiptRepository extends JpaRepository<CustomerReceipt,Long> {
 
 
-    @Query("Select cr from CustomerReceipt cr where cr.transactionPointReceive.id =: tranId")
+    @Query("Select cr from CustomerReceipt cr where cr.transactionPointReceive.id =:tranId")
     public List<CustomerReceipt> getCustomerReceiptByTranId(@Param("tranId") Long tranId);
 }

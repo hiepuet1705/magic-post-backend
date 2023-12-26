@@ -8,4 +8,5 @@ public class PackageStatus {
     public static final String AT_TRANSACTION_POINT = "AT_TRANSACTION_POINT";
 
     public static final String SHIP_DONE = "SHIP_DONE";
+    public static final String RETURNED_TO_TRANSACTION_POINT = "RETURNED_TO_TRANSACTION_POINT";
 }

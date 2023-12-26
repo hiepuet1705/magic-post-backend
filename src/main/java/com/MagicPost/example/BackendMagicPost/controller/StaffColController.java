@@ -35,27 +35,25 @@ public class StaffColController {
         return new ResponseEntity<>(confirm, HttpStatus.OK);
 
     }
-    @PostMapping("/receipt-cc/{colSentId}/{packageId}/{colReceiveId}")
+    @PostMapping("/receipt-cc/{packageId}/{colReceiveId}")
     @PreAuthorize("hasRole('OFFICERCOL')")
     public ResponseEntity<DeliveryReceiptCC> createDeliveryReceiptCC(@RequestBody DeliveryReceiptCC deliveryReceiptCC,
-                                                                     @PathVariable("colSentId") Long collectionSentId,
                                                                      @PathVariable("packageId") Long packageId,
                                                                      @PathVariable("colReceiveId") Long collectionReceiveId) {
 
         DeliveryReceiptCC responseDeliveryReceiptCC =  staffColService.createDeliveryReceiptCC(deliveryReceiptCC,
-                collectionSentId,collectionReceiveId,packageId);
+                collectionReceiveId,packageId);
         return new ResponseEntity<>(responseDeliveryReceiptCC, HttpStatus.OK);
     }
 
-    @PostMapping("/receipt-ct/{colSentId}/{packageId}/{tranReceiveId}")
+    @PostMapping("/receipt-ct/{packageId}/{tranReceiveId}")
     @PreAuthorize("hasRole('OFFICERCOL')")
     public ResponseEntity<DeliveryReceiptCT> createDeliveryReceiptCT(@RequestBody DeliveryReceiptCT deliveryReceiptCT,
-                                                                     @PathVariable("colSentId") Long collectionSentId,
                                                                      @PathVariable("packageId") Long packageId,
                                                                      @PathVariable("tranReceiveId") Long transactionReceiveId) {
 
         DeliveryReceiptCT responseDeliveryReceiptCT =  staffColService.createDeliveryReceiptCT(deliveryReceiptCT,
-                collectionSentId,transactionReceiveId,packageId);
+                transactionReceiveId,packageId);
         return new ResponseEntity<>(responseDeliveryReceiptCT, HttpStatus.OK);
     }
 }

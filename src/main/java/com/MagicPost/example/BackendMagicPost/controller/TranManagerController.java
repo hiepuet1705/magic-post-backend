@@ -21,25 +21,25 @@ public class TranManagerController {
         this.tranManagerService = tranManagerService;
     }
 
-    @GetMapping("/{id}/sent-packages")
+    @GetMapping("/sent-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
-    public ResponseEntity<List<Package>> getSentPackagesInATransactionPoint(@PathVariable("id") Long tranPointId){
+    public ResponseEntity<List<Package>> getSentPackagesInATransactionPoint(){
 
-        List<Package> packages = tranManagerService.getSentPackageInATransactionPoint(tranPointId);
+        List<Package> packages = tranManagerService.getSentPackageInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
-    @GetMapping("/{id}/curr-packages")
+    @GetMapping("/curr-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
-    public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(@PathVariable("id") Long tranId){
-        List<Package> packages = tranManagerService.getCurrentPackagesInATransactionPoint(tranId);
+    public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(){
+        List<Package> packages = tranManagerService.getCurrentPackagesInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
-    @GetMapping("/{id}/rec-packages")
+    @GetMapping("/rec-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
-    public ResponseEntity<List<Package>> getReceivePackagesInATransactionPoint(@PathVariable("id") Long tranId){
-        List<Package> packages = tranManagerService.getReceivePackagesInATransactionPoint(tranId);
+    public ResponseEntity<List<Package>> getReceivePackagesInATransactionPoint(){
+        List<Package> packages = tranManagerService.getReceivePackagesInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }

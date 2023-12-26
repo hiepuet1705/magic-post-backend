@@ -29,8 +29,6 @@ public class CustomerReceipt {
     private String description = "";
     private String time = "00:00";
     private int weight = 0 ;
-
-
     private String receiverName;
     private String receiverPhoneNumber;
 

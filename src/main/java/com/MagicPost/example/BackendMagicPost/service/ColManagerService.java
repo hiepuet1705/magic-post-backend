@@ -5,9 +5,11 @@ import com.MagicPost.example.BackendMagicPost.entity.Package;
 import java.util.List;
 
 public interface ColManagerService {
-     List<Package> getSentPackageInACollectionPoint(Long colPointId);
+     List<Package> getSentPackageInACollectionPoint();
 
-     List<Package> getCurrPackageInACollectionPoint(Long colPointId);
+     List<Package> getCurrPackageInACollectionPoint();
 
-     List<Package> getReceivePackageInACollectionPoint(Long colPointId);
+     List<Package> getReceivePackageInACollectionPoint();
+
+     Long getColPointIdOfCurrentStaff();
 }

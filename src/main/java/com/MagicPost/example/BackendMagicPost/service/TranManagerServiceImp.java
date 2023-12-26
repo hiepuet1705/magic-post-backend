@@ -24,11 +24,14 @@ public class TranManagerServiceImp implements TranManagerService {
 
     private CustomerReceiptRepository customerReceiptRepository;
 
+    private UserService userService;
+
     public TranManagerServiceImp(TransactionPointRepository transactionPointRepository,
                                  StaffTransactionRepository staffTransactionRepository,
                                  DeliveryReceiptTCRepository deliveryReceiptTCRepository,
                                  DeliveryReceiptCTRepository deliveryReceiptCTRepository,
                                  CustomerReceiptRepository customerReceiptRepository,
+                                 UserService userService,
                                  PackageRepository packageRepository) {
         this.transactionPointRepository = transactionPointRepository;
         this.staffTransactionRepository = staffTransactionRepository;
@@ -36,6 +39,7 @@ public class TranManagerServiceImp implements TranManagerService {
         this.deliveryReceiptCTRepository = deliveryReceiptCTRepository;
         this.customerReceiptRepository = customerReceiptRepository;
         this.packageRepository = packageRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -47,9 +51,20 @@ public class TranManagerServiceImp implements TranManagerService {
     }
 
     @Override
-    public List<Package> getSentPackageInATransactionPoint(Long TranPointId) {
+    public Long getTranPointIdOfCurrentStaff() {
+        Long currentUserId = userService.getCurrentUserId();
+
+        StaffTransaction staffTransaction = staffTransactionRepository.getStaffByUserId(currentUserId);
+
+        //
+        return staffTransaction.getTransactionPoint().getId();
+    }
+
+    @Override
+    public List<Package> getSentPackageInATransactionPoint() {
+        Long currentTranId = getTranPointIdOfCurrentStaff();
         List<DeliveryReceiptTC> deliveryReceiptTCs = deliveryReceiptTCRepository.
-                getSentDeliveryReceiptTCByTransactionPointId(TranPointId);
+                getSentDeliveryReceiptTCByTransactionPointId(currentTranId);
 
 
         List<Package> packages = deliveryReceiptTCs.stream().map(deliveryReceiptTC ->
@@ -61,15 +76,17 @@ public class TranManagerServiceImp implements TranManagerService {
     }
 
     @Override
-    public List<Package> getCurrentPackagesInATransactionPoint(Long tranPointId) {
-        return packageRepository.getCurrentPackageInATransactionPoint(tranPointId);
+    public List<Package> getCurrentPackagesInATransactionPoint() {
+        Long currentTranId = getTranPointIdOfCurrentStaff();
+        return packageRepository.getCurrentPackageInATransactionPoint(currentTranId);
     }
 
     @Override
-    public List<Package> getReceivePackagesInATransactionPoint(Long tranPointId) {
+    public List<Package> getReceivePackagesInATransactionPoint() {
+        Long currentTranId = getTranPointIdOfCurrentStaff();
         List<DeliveryReceiptCT> deliveryReceiptCTs =
-                deliveryReceiptCTRepository.getReceivedDeliveryReceiptCTByCollectionPointId(tranPointId);
-        List<CustomerReceipt> customerReceipts = customerReceiptRepository.getCustomerReceiptByTranId(tranPointId);
+                deliveryReceiptCTRepository.getReceivedDeliveryReceiptCTByTransactionPointId(currentTranId);
+        List<CustomerReceipt> customerReceipts = customerReceiptRepository.getCustomerReceiptByTranId(currentTranId);
         List<Long> packageId = new ArrayList<>();
         for(DeliveryReceiptCT de : deliveryReceiptCTs){
             packageId.add(de.getAPackage().getId());

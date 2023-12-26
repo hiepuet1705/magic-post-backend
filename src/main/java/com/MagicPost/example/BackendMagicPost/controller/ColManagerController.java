@@ -21,25 +21,25 @@ public class ColManagerController {
         this.colManagerService = colManagerService;
     }
 
-    @GetMapping("/{id}/sent-packages")
+    @GetMapping("/sent-packages")
     @PreAuthorize("hasRole('HEADCOL)")
-    public ResponseEntity<List<Package>> getSentPackagesInACollectionPoint(@PathVariable("id") Long colId){
+    public ResponseEntity<List<Package>> getSentPackagesInACollectionPoint(){
 
-        List<Package> packages = colManagerService.getSentPackageInACollectionPoint(colId);
+        List<Package> packages = colManagerService.getSentPackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
-    @GetMapping("/{id}/curr-packages")
+    @GetMapping("/curr-packages")
     @PreAuthorize("hasRole('HEADCOL')")
-    public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(@PathVariable("id") Long colId){
-        List<Package> packages = colManagerService.getCurrPackageInACollectionPoint(colId);
+    public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(){
+        List<Package> packages = colManagerService.getCurrPackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
-    @GetMapping("/{id}/rec-packages")
+    @GetMapping("/rec-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
-    public ResponseEntity<List<Package>> getReceivePackageInACollectionPoint(@PathVariable("id") Long colId){
-        List<Package> packages = colManagerService.getReceivePackageInACollectionPoint(colId);
+    public ResponseEntity<List<Package>> getReceivePackageInACollectionPoint(){
+        List<Package> packages = colManagerService.getReceivePackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }

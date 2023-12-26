@@ -44,33 +44,32 @@ public class StaffColServiceImp implements StaffColService {
         this.userService = userService;
 
     }
+    @Override
+    public Long getColPointIdOfCurrentStaff() {
+        Long currentUserId = userService.getCurrentUserId();
+        // find Staff find userId;
+        StaffCollection staffCollection = staffCollectionRepository.getStaffByUserId(currentUserId);
+
+        //
+        return staffCollection.getCollectionPoint().getId();
+    }
 
 
     @Override
     public String confirmPackageFromTransactionPoint(Long deliveryReceiptTCId) {
 
-        // Check current user belong to collection Point or not
-//        Long currentUserId = userService.getCurrentUserId();
-
-
-        // find staff by user
-//        StaffCollection staffCollection = staffCollectionRepository.getStaffByUserId(currentUserId);
-
-       // check whether collection point == delivery point
 
         DeliveryReceiptTC deliveryReceiptTC = deliveryReceiptTCRepository.findById(deliveryReceiptTCId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Delivery Receipt not found"));
-
-//        if(!staffCollection.getCollectionPoint().getId().equals(deliveryReceiptTC.getCollectionPointReceiver().getId())){
-//            throw new CustomApiException(HttpStatus.CONFLICT,"Conflict between collection and staff");
-//        }
+        if(!getColPointIdOfCurrentStaff().equals(deliveryReceiptTC.getCollectionPointReceiver().getId())){
+            throw new CustomApiException(HttpStatus.CONFLICT,"Conflict between staff and collection point");
+        }
         Long packageId = deliveryReceiptTC.getAPackage().getId();
         Package aPackage = packageRepository.findById(packageId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
         //Update status of receipt and Package
         deliveryReceiptTC.setStatus(ReceiptStatus.TRANSFERED);
         aPackage.setStatus(PackageStatus.AT_COLLECTION_POINT);
-
         // Update
         aPackage.setTransactionPoint(0L);
         aPackage.setCollectionPoint(deliveryReceiptTC.getCollectionPointReceiver().getId());
@@ -82,15 +81,7 @@ public class StaffColServiceImp implements StaffColService {
         return "Confirm Receipt TC From Transaction Point";
     }
 
-    @Override
-    public Long getColPointIdOfCurrentStaff() {
-        Long currentUserId = userService.getCurrentUserId();
-        // find Staff find userId;
-        StaffCollection staffCollection = staffCollectionRepository.getStaffByUserId(currentUserId);
 
-        //
-        return staffCollection.getCollectionPoint().getId();
-    }
 
     @Override
     public String confirmPackageFromOtherCollectionPoint(Long deliveryReceiptCCId) {
@@ -99,6 +90,10 @@ public class StaffColServiceImp implements StaffColService {
         Long packageId = deliveryReceiptCC.getAPackage().getId();
         Package aPackage = packageRepository.findById(packageId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
+
+        if(!deliveryReceiptCC.getCollectionPointReceiver().getId().equals(getColPointIdOfCurrentStaff())){
+            throw new CustomApiException(HttpStatus.CONFLICT,"Conflict between staff and collection point");
+        }
         //Update status of receipt and Package
         deliveryReceiptCC.setStatus(ReceiptStatus.TRANSFERED);
         aPackage.setStatus(PackageStatus.AT_COLLECTION_POINT);
@@ -116,8 +111,8 @@ public class StaffColServiceImp implements StaffColService {
 
     @Override
     public DeliveryReceiptCC createDeliveryReceiptCC(DeliveryReceiptCC deliveryReceiptCC,
-                                                     Long collectionPointSenderId,
                                                      Long collectionPointReceiverId, Long packageId) {
+        Long collectionPointSenderId = getColPointIdOfCurrentStaff();
         CollectionPoint collectionPointSender = collectionPointRepository.findById(collectionPointSenderId).
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Collection Point not found"));
         CollectionPoint collectionPointReceiver = collectionPointRepository.findById(collectionPointReceiverId).
@@ -129,9 +124,8 @@ public class StaffColServiceImp implements StaffColService {
         aPackage.setStatus(PackageStatus.TRANSFERING);
 
         //xac nhan thi moi sua
-//        aPackage.setCollectionPoint(collectionPointId);
-//        aPackage.setTransactionPoint(0L);
-
+        aPackage.setCollectionPoint(collectionPointReceiverId);
+        aPackage.setTransactionPoint(0L);
         deliveryReceiptCC.setSentPointAddress(collectionPointSender.getAddress());
         deliveryReceiptCC.setReceivePointAddress(collectionPointReceiver.getAddress());
         deliveryReceiptCC.setPackageName(aPackage.getName());
@@ -147,8 +141,8 @@ public class StaffColServiceImp implements StaffColService {
 
     @Override
     public DeliveryReceiptCT createDeliveryReceiptCT(DeliveryReceiptCT deliveryReceiptCT,
-                                                     Long collectionPointSenderId,
                                                      Long transactionPointReceiverId, Long packageId) {
+        Long collectionPointSenderId= getColPointIdOfCurrentStaff();
         CollectionPoint collectionPointSender = collectionPointRepository.findById(collectionPointSenderId).
                 orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Collection Point not found"));
         TransactionPoint transactionPointReceiver = transactionPointRepository.findById(transactionPointReceiverId).
@@ -160,8 +154,8 @@ public class StaffColServiceImp implements StaffColService {
         aPackage.setStatus(PackageStatus.TRANSFERING);
 
         //xac nhan thi moi sua
-//        aPackage.setCollectionPoint(collectionPointId);
-//        aPackage.setTransactionPoint(0L);
+        aPackage.setCollectionPoint(0L);
+        aPackage.setTransactionPoint(transactionPointReceiverId);
 
         deliveryReceiptCT.setSentPointAddress(collectionPointSender.getAddress());
         deliveryReceiptCT.setReceivePointAddress(transactionPointReceiver.getAddress());

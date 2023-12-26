@@ -26,6 +26,7 @@ public class User {
     private String phoneNumber;
 
     @Column(nullable = false, unique = true)
+    // validation
     private String username;
     @Column(nullable = false)
     private String password;

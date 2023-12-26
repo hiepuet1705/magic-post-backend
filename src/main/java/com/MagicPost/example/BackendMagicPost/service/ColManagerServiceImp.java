@@ -1,8 +1,6 @@
 package com.MagicPost.example.BackendMagicPost.service;
 
-import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptCC;
-import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptCT;
-import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptTC;
+import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
 import com.MagicPost.example.BackendMagicPost.repository.*;
@@ -22,6 +20,8 @@ public class ColManagerServiceImp implements ColManagerService{
 
     private PackageRepository packageRepository;
 
+    private UserService userService;
+
 
 
     private DeliveryReceiptCTRepository deliveryReceiptCTRepository;
@@ -35,19 +35,24 @@ public class ColManagerServiceImp implements ColManagerService{
                                 PackageRepository packageRepository,
                                 DeliveryReceiptCTRepository deliveryReceiptCTRepository,
                                 DeliveryReceiptCCRepository deliveryReceiptCCRepository,
-                                DeliveryReceiptTCRepository deliveryReceiptTCRepository) {
+                                DeliveryReceiptTCRepository deliveryReceiptTCRepository,
+                                UserService userService) {
         this.collectionPointRepository = collectionPointRepository;
         this.staffCollectionRepository = staffCollectionRepository;
         this.packageRepository = packageRepository;
         this.deliveryReceiptCTRepository = deliveryReceiptCTRepository;
         this.deliveryReceiptCCRepository = deliveryReceiptCCRepository;
         this.deliveryReceiptTCRepository = deliveryReceiptTCRepository;
+        this.userService = userService;
     }
 
     @Override
-    public List<Package> getSentPackageInACollectionPoint(Long colPointId) {
-        List<DeliveryReceiptCT> deliveryReceiptCTList = deliveryReceiptCTRepository.getSentDeliveryReceiptCTByCollectionPointId(colPointId);
-        List<DeliveryReceiptCC> deliveryReceiptCCList = deliveryReceiptCCRepository.getSentDeliveryReceiptCCByCollectionPointId(colPointId);
+    public List<Package> getSentPackageInACollectionPoint() {
+        Long currentCollectionPointId = getColPointIdOfCurrentStaff();
+        List<DeliveryReceiptCT> deliveryReceiptCTList = deliveryReceiptCTRepository.
+                getSentDeliveryReceiptCTByCollectionPointId(currentCollectionPointId);
+        List<DeliveryReceiptCC> deliveryReceiptCCList = deliveryReceiptCCRepository.
+                getSentDeliveryReceiptCCByCollectionPointId(currentCollectionPointId);
         Set<Long> packageId = new HashSet<>();
         for(DeliveryReceiptCT de : deliveryReceiptCTList){
             packageId.add(de.getAPackage().getId());
@@ -61,17 +66,19 @@ public class ColManagerServiceImp implements ColManagerService{
     }
 
     @Override
-    public List<Package> getCurrPackageInACollectionPoint(Long colPointId) {
-        List<Package> packages = packageRepository.getPackagesInCollectionPoint(colPointId);
+    public List<Package> getCurrPackageInACollectionPoint() {
+        Long currentCollectionPoint = getColPointIdOfCurrentStaff();
+        List<Package> packages = packageRepository.getCurrentPackagesInCollectionPoint(currentCollectionPoint);
         return packages;
     }
 
     @Override
-    public List<Package> getReceivePackageInACollectionPoint(Long colPointId) {
+    public List<Package> getReceivePackageInACollectionPoint() {
+        Long currentCollectionPointId = getColPointIdOfCurrentStaff();
         List<DeliveryReceiptCC> deliveryReceiptCCList = deliveryReceiptCCRepository
-                .getDeliveryRReceiptCCByCollectionPointId(colPointId);
+                .getDeliveryRReceiptCCByCollectionPointId(currentCollectionPointId);
         List<DeliveryReceiptTC> deliveryReceiptTCList = deliveryReceiptTCRepository
-                .getDeliveryReceiptTCByCollectionPointId(colPointId);
+                .getDeliveryReceiptTCByCollectionPointId(currentCollectionPointId);
 
         Set<Long> packageId = new HashSet<>();
         for(DeliveryReceiptCC de : deliveryReceiptCCList){
@@ -84,5 +91,15 @@ public class ColManagerServiceImp implements ColManagerService{
                 .orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"))).toList();
         return packages;
 
+    }
+
+    @Override
+    public Long getColPointIdOfCurrentStaff() {
+        Long currentUserId = userService.getCurrentUserId();
+        // find Staff find userId;
+        StaffCollection staffCollection = staffCollectionRepository.getStaffByUserId(currentUserId);
+
+        //
+        return staffCollection.getCollectionPoint().getId();
     }
 }

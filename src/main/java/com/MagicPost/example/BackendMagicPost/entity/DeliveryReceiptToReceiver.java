@@ -27,7 +27,7 @@ public class DeliveryReceiptToReceiver {
     private String receiverName;
     private String receiverPhoneNumber;
 
-    private String type;
+    private String type="";
 
     private String status = ReceiptStatus.NOT_ARRIVE;
     @Transient
