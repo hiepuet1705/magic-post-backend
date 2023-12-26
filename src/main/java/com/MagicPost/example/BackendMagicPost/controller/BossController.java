@@ -4,6 +4,7 @@ import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.payload.PackageDto;
 import com.MagicPost.example.BackendMagicPost.payload.PointDto;
+import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
 import com.MagicPost.example.BackendMagicPost.service.BossService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,12 @@ public class BossController {
     public ResponseEntity<List<PackageDto>>  getAllPackages(){
         List<PackageDto> transactionPoints = bossService.getAllPackages();
         return new ResponseEntity<>(transactionPoints, HttpStatus.OK);
+    }
+    @GetMapping("/staff")
+    @PreAuthorize("hasRole('BOSS')")
+    public ResponseEntity<List<StaffDto>>  getAllStaff(){
+        List<StaffDto> allStaff = bossService.getAllStaff();
+        return new ResponseEntity<>(allStaff, HttpStatus.OK);
     }
     @GetMapping("/tran-points")
     @PreAuthorize("hasRole('BOSS')")

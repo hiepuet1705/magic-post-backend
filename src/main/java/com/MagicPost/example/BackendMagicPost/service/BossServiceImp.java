@@ -5,6 +5,8 @@ import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
 import com.MagicPost.example.BackendMagicPost.payload.PackageDto;
 import com.MagicPost.example.BackendMagicPost.payload.PointDto;
+import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
+import com.MagicPost.example.BackendMagicPost.payload.UserDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -106,6 +108,69 @@ public class BossServiceImp implements BossService{
 
         }
         return packageDtoList;
+    }
+
+    @Override
+    public List<StaffDto> getAllStaff() {
+        List<StaffTransaction> staffTransactions = staffTransactionRepository.findAll();
+        List<StaffCollection> staffCollections = staffCollectionRepository.findAll();
+
+        List<StaffDto> allStaff = new ArrayList<>();
+
+        for(StaffTransaction staffTransaction : staffTransactions){
+            StaffDto staffDto = new StaffDto();
+            staffDto.setId(staffTransaction.getId());
+            staffDto.setIsManager(staffTransaction.getIsManager());
+            staffDto.setType("Staff Transaction");
+            
+            // Set User DTO
+            User user = staffTransaction.getUser();
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDto.setLastName(user.getLastName());
+            userDto.setFirstName(user.getFirstName());
+            userDto.setAddress(user.getAddress());
+            userDto.setPhoneNumber(user.getPhoneNumber());
+            userDto.setUsername(user.getUsername());    
+            userDto.setPassword(user.getPassword());
+            staffDto.setUserDto(userDto);
+            // set PointDTO
+            TransactionPoint transactionPoint = staffTransaction.getTransactionPoint();
+            PointDto pointDto = new PointDto();
+            pointDto.setId(transactionPoint.getId());
+            pointDto.setName(transactionPoint.getName());
+            pointDto.setAddress(transactionPoint.getAddress());
+            staffDto.setPointDto(pointDto);
+            allStaff.add(staffDto);
+        }
+        for(StaffCollection staffCollection : staffCollections){
+            StaffDto staffDto = new StaffDto();
+            staffDto.setId(staffCollection.getId());
+            staffDto.setIsManager(staffCollection.getIsManager());
+            staffDto.setType("Staff Collection");
+
+            // Set User DTO
+            User user = staffCollection.getUser();
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDto.setLastName(user.getLastName());
+            userDto.setFirstName(user.getFirstName());
+            userDto.setAddress(user.getAddress());
+            userDto.setPhoneNumber(user.getPhoneNumber());
+            userDto.setUsername(user.getUsername());
+            userDto.setPassword(user.getPassword());
+            staffDto.setUserDto(userDto);
+            // set PointDTO
+            CollectionPoint collectionPoint = staffCollection.getCollectionPoint();
+            PointDto pointDto = new PointDto();
+            pointDto.setId(collectionPoint.getId());
+            pointDto.setName(collectionPoint.getName());
+            pointDto.setAddress(collectionPoint.getAddress());
+            staffDto.setPointDto(pointDto);
+            allStaff.add(staffDto);
+        }
+        return allStaff;
+        
     }
 
     @Override
