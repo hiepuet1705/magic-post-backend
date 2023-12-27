@@ -23,7 +23,7 @@ public class ColManagerController {
     }
 
     @GetMapping("/sent-packages")
-    @PreAuthorize("hasRole('HEADCOL)")
+    @PreAuthorize("hasRole('HEADCOL')")
     public ResponseEntity<List<Package>> getSentPackagesInACollectionPoint(){
 
         List<Package> packages = colManagerService.getSentPackageInACollectionPoint();
