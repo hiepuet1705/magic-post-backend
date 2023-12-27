@@ -105,10 +105,10 @@ public class BossServiceImp implements BossService{
                 pointDto.setName(collectionPoint.getName());
                 pointDto.setAddress(collectionPoint.getAddress());
             }
-            else {
+            else if(aPackage.getTransactionPoint()!=0L) {
                 TransactionPoint transactionPoint = transactionPointRepository.
                         findById(aPackage.getTransactionPoint()).
-                        orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Collection not found"));
+                        orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction not found"));
                 pointDto.setId(transactionPoint.getId());
                 pointDto.setName(transactionPoint.getName());
                 pointDto.setAddress(transactionPoint.getAddress());

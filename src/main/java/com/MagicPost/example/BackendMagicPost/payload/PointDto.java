@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class PointDto {
-    private Long id;
-    private String name;
-    private String address;
+    private Long id = 0L;
+    private String name = "";
+    private String address="";
 }
