@@ -43,7 +43,8 @@ public class BossServiceImp implements BossService{
             PointDto pointDto = new PointDto();
             pointDto.setId(cl.getId());
             pointDto.setName(cl.getName());
-            pointDto.setAddress(cl.getAddress());
+            pointDto.setDistrict(cl.getDistrict());
+            pointDto.setProvince(cl.getProvince());
             pointDtos.add(pointDto);
         }
 
@@ -58,7 +59,8 @@ public class BossServiceImp implements BossService{
             PointDto pointDto = new PointDto();
             pointDto.setId(transactionPoint.getId());
             pointDto.setName(transactionPoint.getName());
-            pointDto.setAddress(transactionPoint.getAddress());
+            pointDto.setDistrict(transactionPoint.getDistrict());
+            pointDto.setProvince(transactionPoint.getProvince());
             pointDtos.add(pointDto);
         }
 
@@ -79,7 +81,8 @@ public class BossServiceImp implements BossService{
             packageDto.setStatus(aPackage.getStatus());
             packageDto.setReceiverFirstName(aPackage.getReceiverFirstName());
             packageDto.setReceiverLastName(aPackage.getReceiverLastName());
-            packageDto.setReceiverAddress(aPackage.getReceiverAddress());
+            packageDto.setReceiverDistrict(aPackage.getReceiverDistrict());
+            packageDto.setReceiverProvince(aPackage.getReceiverProvince());
             packageDto.setReceiverPhoneNumber(aPackage.getReceiverPhoneNumber());
             packageDto.setHashKey(aPackage.getHashKey());
             packageDto.setCollectionPoint(aPackage.getCollectionPoint());
@@ -103,7 +106,8 @@ public class BossServiceImp implements BossService{
                         orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Collection not found"));
                 pointDto.setId(collectionPoint.getId());
                 pointDto.setName(collectionPoint.getName());
-                pointDto.setAddress(collectionPoint.getAddress());
+                pointDto.setDistrict(collectionPoint.getDistrict());
+                pointDto.setProvince(collectionPoint.getProvince());
             }
             else if(aPackage.getTransactionPoint()!=0L) {
                 TransactionPoint transactionPoint = transactionPointRepository.
@@ -111,7 +115,8 @@ public class BossServiceImp implements BossService{
                         orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction not found"));
                 pointDto.setId(transactionPoint.getId());
                 pointDto.setName(transactionPoint.getName());
-                pointDto.setAddress(transactionPoint.getAddress());
+                pointDto.setDistrict(transactionPoint.getDistrict());
+                pointDto.setProvince(transactionPoint.getProvince());
             }
             packageDto.setPointDto(pointDto);
             packageDtoList.add(packageDto);
@@ -150,7 +155,8 @@ public class BossServiceImp implements BossService{
             PointDto pointDto = new PointDto();
             pointDto.setId(transactionPoint.getId());
             pointDto.setName(transactionPoint.getName());
-            pointDto.setAddress(transactionPoint.getAddress());
+            pointDto.setDistrict(transactionPoint.getDistrict());
+            pointDto.setProvince(transactionPoint.getProvince());
             staffDto.setPointDto(pointDto);
             allStaff.add(staffDto);
         }
@@ -176,7 +182,8 @@ public class BossServiceImp implements BossService{
             PointDto pointDto = new PointDto();
             pointDto.setId(collectionPoint.getId());
             pointDto.setName(collectionPoint.getName());
-            pointDto.setAddress(collectionPoint.getAddress());
+            pointDto.setDistrict(collectionPoint.getDistrict());
+            pointDto.setProvince(collectionPoint.getProvince());
             staffDto.setPointDto(pointDto);
             allStaff.add(staffDto);
         }

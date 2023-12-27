@@ -1,6 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.entity;
 
 
+import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -33,6 +34,8 @@ public class CustomerReceipt {
     private String receiverPhoneNumber="";
 
     private String fee="";
+
+    private String status = ReceiptStatus.TRANSFERED;
 
     @ManyToOne
     @JsonBackReference

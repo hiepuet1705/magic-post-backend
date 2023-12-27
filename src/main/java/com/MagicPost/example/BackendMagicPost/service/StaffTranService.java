@@ -30,4 +30,6 @@ public interface StaffTranService {
 
     public List<DeliveryReceiptToReceiver> getAllCompletedPackage(Long tranId);
 
+    CustomerReceipt getSingleCustomerReceipt(Long customerReceiptId);
+
 }

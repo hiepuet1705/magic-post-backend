@@ -95,7 +95,8 @@ public class ColManagerServiceImp implements ColManagerService{
             PointDto pointDto = new PointDto();
             pointDto.setId(collectionPoint.getId());
             pointDto.setName(collectionPoint.getName());
-            pointDto.setAddress(collectionPoint.getAddress());
+            pointDto.setDistrict(collectionPoint.getDistrict());
+            pointDto.setProvince(collectionPoint.getProvince());
             staffDto.setPointDto(pointDto);
             staffDtoList.add(staffDto);
         }

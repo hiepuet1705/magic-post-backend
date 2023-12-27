@@ -12,4 +12,10 @@ public interface CustomerReceiptRepository extends JpaRepository<CustomerReceipt
 
     @Query("Select cr from CustomerReceipt cr where cr.transactionPointReceive.id =:tranId")
     public List<CustomerReceipt> getCustomerReceiptByTranId(@Param("tranId") Long tranId);
+
+
+    @Query("Select cr from CustomerReceipt cr where cr.aPackage.id =:packageId")
+    public CustomerReceipt getCustomerReceiptByPackageId(@Param("packageId") Long packageId);
+
+
 }

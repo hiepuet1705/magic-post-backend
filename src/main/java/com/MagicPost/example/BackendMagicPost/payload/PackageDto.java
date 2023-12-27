@@ -21,7 +21,8 @@ public class PackageDto {
     private String status = PackageStatus.AT_TRANSACTION_POINT;
     private String receiverFirstName;
     private String receiverLastName;
-    private String receiverAddress;
+    private String receiverProvince;
+    private String receiverDistrict;
     private String receiverPhoneNumber;
     private String hashKey="";
 

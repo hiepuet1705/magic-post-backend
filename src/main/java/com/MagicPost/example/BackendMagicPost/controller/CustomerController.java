@@ -1,6 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.controller;
 
 import com.MagicPost.example.BackendMagicPost.entity.Package;
+import com.MagicPost.example.BackendMagicPost.payload.PackageFlowDto;
 import com.MagicPost.example.BackendMagicPost.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,4 +28,12 @@ public class CustomerController {
         List<Package> packages = customerService.getAllPackagesByCustomerId(customerId);
         return new ResponseEntity<>(packages, HttpStatus.OK);
     }
+    @GetMapping("/package/{packageId}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<PackageFlowDto> getPackageFlowByPackageId(@PathVariable("packageId") Long packageId){
+        PackageFlowDto packageFlowDto = customerService.trackingSinglePackage(packageId);
+        return new ResponseEntity<>(packageFlowDto, HttpStatus.OK);
+    }
+
+
 }

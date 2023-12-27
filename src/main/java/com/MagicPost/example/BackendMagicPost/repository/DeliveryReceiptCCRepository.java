@@ -1,5 +1,6 @@
 package com.MagicPost.example.BackendMagicPost.repository;
 
+import com.MagicPost.example.BackendMagicPost.entity.CustomerReceipt;
 import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptCC;
 import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptCT;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,7 @@ public interface DeliveryReceiptCCRepository extends JpaRepository<DeliveryRecei
 
     @Query("SELECT d FROM DeliveryReceiptCC d WHERE d.collectionPointSender.id = :colPointId AND (d.status = 'TRANSFERED' OR d.status = 'CURR_HERE')")
     public List<DeliveryReceiptCC> getReceivedDeliveryReceiptCCByCollectionPointId(@Param("colPointId") Long colPointId);
+
+    @Query("Select d from DeliveryReceiptCC d where d.aPackage.id =:packageId")
+    public DeliveryReceiptCC getDeliveryReceiptCCByPackageId(@Param("packageId") Long packageId);
 }

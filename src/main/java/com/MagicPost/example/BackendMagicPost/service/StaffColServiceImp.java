@@ -126,8 +126,8 @@ public class StaffColServiceImp implements StaffColService {
         //xac nhan thi moi sua
         aPackage.setCollectionPoint(collectionPointReceiverId);
         aPackage.setTransactionPoint(0L);
-        deliveryReceiptCC.setSentPointAddress(collectionPointSender.getAddress());
-        deliveryReceiptCC.setReceivePointAddress(collectionPointReceiver.getAddress());
+        deliveryReceiptCC.setSentPointAddress(collectionPointSender.getDistrict() + " " + collectionPointReceiver.getProvince());
+        deliveryReceiptCC.setReceivePointAddress(collectionPointReceiver.getDistrict() + " " + collectionPointReceiver.getProvince());
         deliveryReceiptCC.setPackageName(aPackage.getName());
         deliveryReceiptCC.setReceiverName(aPackage.getReceiverFirstName()+ aPackage.getReceiverLastName());
         deliveryReceiptCC.setCollectionPointSender(collectionPointSender);
@@ -157,8 +157,8 @@ public class StaffColServiceImp implements StaffColService {
         aPackage.setCollectionPoint(0L);
         aPackage.setTransactionPoint(transactionPointReceiverId);
 
-        deliveryReceiptCT.setSentPointAddress(collectionPointSender.getAddress());
-        deliveryReceiptCT.setReceivePointAddress(transactionPointReceiver.getAddress());
+        deliveryReceiptCT.setSentPointAddress(collectionPointSender.getDistrict() + " " + collectionPointSender.getProvince());
+        deliveryReceiptCT.setReceivePointAddress(transactionPointReceiver.getDistrict() + " " + transactionPointReceiver.getProvince());
         deliveryReceiptCT.setPackageName(aPackage.getName());
         deliveryReceiptCT.setCollectionPointSender(collectionPointSender);
         deliveryReceiptCT.setType(aPackage.getType());

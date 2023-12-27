@@ -4,6 +4,7 @@ package com.MagicPost.example.BackendMagicPost.service;
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
+import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import com.MagicPost.example.BackendMagicPost.utils.PackageStatus;
 import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,12 +68,19 @@ public class StaffTranServiceImp implements StaffTranService {
     public Package createPackage(Package aPackage,Long customerId) {
         //
         Long transactionPointId = getTranPointIdOfCurrentStaff();
+        TransactionPoint transactionPoint = transactionPointRepository.findById(transactionPointId).
+                orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction not found"));
 
         Customer customer = customerRepository.findById(customerId).
                 orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Customer not found"));
         aPackage.setSender(customer);
         aPackage.setTransactionPoint(transactionPointId);
         aPackage.setCollectionPoint(0L);
+
+
+
+
+
         aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
         String pkKey =  passwordEncoder.encode
                 (aPackage.getName() + aPackage.getId()).replaceAll("[$./]", "").substring(0,12);
@@ -132,8 +141,8 @@ public class StaffTranServiceImp implements StaffTranService {
         aPackage.setCollectionPoint(collectionPointId);
         aPackage.setTransactionPoint(0L);
 
-        deliveryReceiptTC.setSentPointAddress(transactionPoint.getAddress());
-        deliveryReceiptTC.setReceivePointAddress(collectionPoint.getAddress());
+        deliveryReceiptTC.setSentPointAddress(transactionPoint.getDistrict() + " " + transactionPoint.getProvince());
+        deliveryReceiptTC.setReceivePointAddress(collectionPoint.getDistrict() + " " + collectionPoint.getProvince());
         deliveryReceiptTC.setPackageName(aPackage.getName());
         deliveryReceiptTC.setTransactionPointSender(transactionPoint);
         deliveryReceiptTC.setCollectionPointReceiver(collectionPoint);
@@ -192,7 +201,7 @@ public class StaffTranServiceImp implements StaffTranService {
         deliveryReceiptToReceiver.setAPackage(aPackage);
         deliveryReceiptToReceiver.setStatus(ReceiptStatus.TRANSFERING);
         deliveryReceiptToReceiver.setTransactionPointSender(transactionPoint);
-        deliveryReceiptToReceiver.setSentPointAddress(transactionPoint.getAddress());
+        deliveryReceiptToReceiver.setSentPointAddress(transactionPoint.getDistrict() + " " + transactionPoint.getProvince());
         deliveryReceiptToReceiver.setType(aPackage.getType());
         deliveryReceiptToReceiver.setReceiverName(aPackage.getReceiverFirstName()+aPackage.getReceiverLastName());
         deliveryReceiptToReceiver.setReceiverPhoneNumber(aPackage.getReceiverPhoneNumber());
@@ -206,7 +215,6 @@ public class StaffTranServiceImp implements StaffTranService {
         DeliveryReceiptToReceiver deliveryReceiptToReceiver = deliveryReceiptToReceiverRepository.findById(deliveryRToReceiverId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"receipt to receiver not found"));
         deliveryReceiptToReceiver.setStatus(ReceiptStatus.TRANSFERED);
-
         // Update Status Of Package
         Package aPackage =  deliveryReceiptToReceiver.getAPackage();
         aPackage.setStatus(PackageStatus.SHIP_DONE);
@@ -241,6 +249,11 @@ public class StaffTranServiceImp implements StaffTranService {
             return deliveryReceiptToReceivers;
 
 
+    }
+
+    @Override
+    public CustomerReceipt getSingleCustomerReceipt(Long customerReceiptId) {
+        return customerReceiptRepository.findById(customerReceiptId).get();
     }
 
 

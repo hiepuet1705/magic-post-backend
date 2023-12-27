@@ -1,6 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.controller;
 
 import com.MagicPost.example.BackendMagicPost.entity.Package;
+import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
 import com.MagicPost.example.BackendMagicPost.service.TranManagerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,13 @@ public class TranManagerController {
     public ResponseEntity<List<Package>> getReceivePackagesInATransactionPoint(){
         List<Package> packages = tranManagerService.getReceivePackagesInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
+
+    }
+    @GetMapping("/staff")
+    @PreAuthorize("hasRole('HEADTRAN')")
+    public ResponseEntity<List<StaffDto>> getAllStaffInATransactionPoint(){
+        List<StaffDto> staffDtos = tranManagerService.getAllStaffInATransactionPoint();
+        return new ResponseEntity<>(staffDtos, HttpStatus.OK);
 
     }
 

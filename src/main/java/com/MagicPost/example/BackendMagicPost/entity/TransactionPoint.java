@@ -23,7 +23,9 @@ public class TransactionPoint {
 
     private String name;
 
-    private String address;
+    @Column(unique = true)
+    private String district;
+    private String province;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "transactionPoint",cascade = CascadeType.ALL,orphanRemoval = true)

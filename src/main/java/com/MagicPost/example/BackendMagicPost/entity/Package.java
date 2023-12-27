@@ -1,5 +1,6 @@
 package com.MagicPost.example.BackendMagicPost.entity;
 
+import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 import com.MagicPost.example.BackendMagicPost.utils.PackageStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -7,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "package")
@@ -25,11 +29,13 @@ public class Package {
     private String status = PackageStatus.AT_TRANSACTION_POINT;
     private String receiverFirstName;
     private String receiverLastName;
-    private String receiverAddress;
+    private String receiverProvince;
+    private String receiverDistrict;
     private String receiverPhoneNumber;
 
     @Column(unique = true)
     private String hashKey="";
+
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)

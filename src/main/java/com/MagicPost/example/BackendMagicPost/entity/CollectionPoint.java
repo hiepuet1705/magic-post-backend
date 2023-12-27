@@ -24,7 +24,10 @@ public class CollectionPoint {
 
     private String name;
 
-    private String address;
+    private String district;
+
+    @Column(unique = true)
+    private String province;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "collectionPoint",cascade = CascadeType.ALL,orphanRemoval = true)

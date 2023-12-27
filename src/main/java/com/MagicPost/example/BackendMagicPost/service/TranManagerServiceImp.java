@@ -4,6 +4,9 @@ package com.MagicPost.example.BackendMagicPost.service;
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
+import com.MagicPost.example.BackendMagicPost.payload.PointDto;
+import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
+import com.MagicPost.example.BackendMagicPost.payload.UserDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -48,6 +51,41 @@ public class TranManagerServiceImp implements TranManagerService {
                 () -> new CustomApiException(HttpStatus.BAD_REQUEST,
                         "Manager not found"));
         return manager.getTransactionPoint();
+    }
+
+    @Override
+    public List<StaffDto> getAllStaffInATransactionPoint() {
+        Long tranPointId = getTranPointIdOfCurrentStaff();
+        TransactionPoint transactionPoint = transactionPointRepository.findById(tranPointId)
+                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Collection Point not found"));
+        List<StaffTransaction> staffTransactions =  staffTransactionRepository.getAllStaffByTranId(tranPointId);
+        List<StaffDto> staffDtoList = new ArrayList<>();
+        for ( StaffTransaction staffTransaction:staffTransactions ) {
+            StaffDto staffDto = new StaffDto();
+            staffDto.setId(staffTransaction.getId());
+            staffDto.setIsManager(staffTransaction.getIsManager());
+            staffDto.setType("Transaction Staff");
+            User user = staffTransaction.getUser();
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDto.setLastName(user.getLastName());
+            userDto.setFirstName(user.getFirstName());
+            userDto.setAddress(user.getAddress());
+            userDto.setPhoneNumber(user.getPhoneNumber());
+            userDto.setUsername(user.getUsername());
+            userDto.setPassword(user.getPassword());
+            staffDto.setUserDto(userDto);
+
+            //
+            PointDto pointDto = new PointDto();
+            pointDto.setId(transactionPoint.getId());
+            pointDto.setName(transactionPoint.getName());
+            pointDto.setDistrict(transactionPoint.getDistrict());
+            pointDto.setProvince(transactionPoint.getProvince());
+            staffDto.setPointDto(pointDto);
+            staffDtoList.add(staffDto);
+        }
+        return staffDtoList;
     }
 
     @Override
