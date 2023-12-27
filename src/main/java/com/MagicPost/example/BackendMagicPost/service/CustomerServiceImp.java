@@ -67,7 +67,6 @@ public class CustomerServiceImp implements CustomerService {
 
         return packages;
     }
-
     @Override
     public PackageFlowDto trackingSinglePackage(Long packageId) {
         // find receipt
@@ -78,10 +77,6 @@ public class CustomerServiceImp implements CustomerService {
             throw new CustomApiException(HttpStatus.CONFLICT, "Conflict between customer and packageId");
         }
         PackageFlowDto packageFlowDto = new PackageFlowDto();
-
-
-
-
         packageFlowDto.setPackageId(packageId);
         packageFlowDto.setStatus(aPackage.getStatus());
         if (aPackage.getStatus().equals(PackageStatus.SHIP_DONE) ||
@@ -107,8 +102,6 @@ public class CustomerServiceImp implements CustomerService {
                 pointDto.setProvince(transactionPoint.getProvince());
                 packageFlowDto.setCurrentPoint(pointDto);
             }
-
-
         }
         CustomerReceipt customerReceipt = customerReceiptRepository.getCustomerReceiptByPackageId(packageId);
         //
@@ -147,46 +140,26 @@ public class CustomerServiceImp implements CustomerService {
         pointDtos.add(fourthPointDto);
         packageFlowDto.setPointHistoryDtoList(pointDtos);
 
-        //
         if(customerReceipt!= null){
-            TransactionPoint transactionPoint = customerReceipt.getTransactionPointReceive();
-//            PointDto firstTranPoint = new PointDto();
-//            firstTranPoint.setId(transactionPoint.getId());
-//            firstTranPoint.setName(transactionPoint.getName());
-//            firstTranPoint.setDistrict(transactionPoint.getDistrict());
-//            firstTranPoint.setProvince(transactionPoint.getProvince());
-
-            // first tran
             packageFlowDto.setFirstTranPoint(firstPointDto);
             packageFlowDto.setFirstTranPointStatus(customerReceipt.getStatus());
-
         }
         DeliveryReceiptTC deliveryReceiptTC = deliveryReceiptTCRepository.getDeliveryReceiptTCByPackageId(packageId);
         if(deliveryReceiptTC!= null){
-            CollectionPoint collectionPoint = deliveryReceiptTC.getCollectionPointReceiver();
-//            PointDto firstColPoint = new PointDto();
-//            firstColPoint.setId(collectionPoint.getId());
-//            firstColPoint.setName(collectionPoint.getName());
-//            firstColPoint.setDistrict(collectionPoint.getDistrict());
-//            firstColPoint.setProvince(collectionPoint.getProvince());
-
-            // first col
             packageFlowDto.setFirstColPoint(secondPointDto);
             packageFlowDto.setFirstColPointStatus(deliveryReceiptTC.getStatus());
 
         }
+        else {
+            packageFlowDto.setFirstColPoint(secondPointDto);
+        }
+        //set point
+        packageFlowDto.setSecondColPoint(thirdPointDto);
+        packageFlowDto.setSecondTranPoint(fourthPointDto);
         if(packageFlowDto.getFirstColPointStatus().equals(ReceiptStatus.TRANSFERED)){
             DeliveryReceiptCC deliveryReceiptCC = deliveryReceiptCCRepository.getDeliveryReceiptCCByPackageId(packageId);
             if(deliveryReceiptCC!= null){
-                CollectionPoint collectionPoint = deliveryReceiptCC.getCollectionPointReceiver();
-//                PointDto secondColPoint = new PointDto();
-//                secondColPoint.setId(collectionPoint.getId());
-//                secondColPoint.setName(collectionPoint.getName());
-//                secondColPoint.setDistrict(collectionPoint.getDistrict());
-//                secondColPoint.setProvince(collectionPoint.getProvince());
 
-                // first col
-                packageFlowDto.setSecondColPoint(thirdPointDto);
                 packageFlowDto.setSecondColPointStatus(deliveryReceiptCC.getStatus());
 
             }
@@ -194,22 +167,9 @@ public class CustomerServiceImp implements CustomerService {
         if(packageFlowDto.getSecondColPointStatus().equals(ReceiptStatus.TRANSFERED)){
             DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.getDeliveryReceiptCTByPackageId(packageId);
             if(deliveryReceiptCT!= null){
-                TransactionPoint transactionPoint = deliveryReceiptCT.getTransactionPointReceiver();
-//                PointDto secondTranPoint = new PointDto();
-//                secondTranPoint.setId(transactionPoint.getId());
-//                secondTranPoint.setName(transactionPoint.getName());
-//                secondTranPoint.setDistrict(transactionPoint.getDistrict());
-//                secondTranPoint.setProvince(transactionPoint.getProvince());
-
-                // first col
-                packageFlowDto.setSecondTranPoint(fourthPointDto);
                 packageFlowDto.setSecondTranPointStatus(deliveryReceiptCT.getStatus());
-
             }
         }
-
-
-
         return packageFlowDto;
     }
 }
