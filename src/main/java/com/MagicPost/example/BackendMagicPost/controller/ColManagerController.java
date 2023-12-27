@@ -1,6 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.controller;
 
 import com.MagicPost.example.BackendMagicPost.entity.Package;
+import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
 import com.MagicPost.example.BackendMagicPost.service.ColManagerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,17 +32,25 @@ public class ColManagerController {
     }
     @GetMapping("/curr-packages")
     @PreAuthorize("hasRole('HEADCOL')")
-    public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(){
+    public ResponseEntity<List<Package>> getCurrPackagesInACollectionPoint(){
         List<Package> packages = colManagerService.getCurrPackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
     @GetMapping("/rec-packages")
-    @PreAuthorize("hasRole('HEADTRAN')")
+    @PreAuthorize("hasRole('HEADCOL')")
     public ResponseEntity<List<Package>> getReceivePackageInACollectionPoint(){
         List<Package> packages = colManagerService.getReceivePackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
+    @GetMapping("/staff")
+    @PreAuthorize("hasRole('HEADCOL')")
+    public ResponseEntity<List<StaffDto>> getAllStaffInACollectionPoint(){
+        List<StaffDto> staffDtos = colManagerService.getAllStaffInACollectionPoint();
+        return new ResponseEntity<>(staffDtos, HttpStatus.OK);
+
+    }
+
 
 }
