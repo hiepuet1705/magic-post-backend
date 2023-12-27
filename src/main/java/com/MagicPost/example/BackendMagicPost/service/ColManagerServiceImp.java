@@ -3,6 +3,9 @@ package com.MagicPost.example.BackendMagicPost.service;
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
+import com.MagicPost.example.BackendMagicPost.payload.PointDto;
+import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
+import com.MagicPost.example.BackendMagicPost.payload.UserDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -63,6 +66,40 @@ public class ColManagerServiceImp implements ColManagerService{
         List<Package> packages = packageId.stream().map(id -> packageRepository.findById(id)
                 .orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"))).toList();
         return packages;
+    }
+
+    @Override
+    public List<StaffDto> getAllStaffInACollectionPoint() {
+        Long colPointId = getColPointIdOfCurrentStaff();
+        CollectionPoint collectionPoint = collectionPointRepository.findById(colPointId)
+                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Collection Point not found"));
+        List<StaffCollection> staffCollections =  staffCollectionRepository.getAllStaffByColId(colPointId);
+        List<StaffDto> staffDtoList = new ArrayList<>();
+        for ( StaffCollection staffCollection:staffCollections ) {
+            StaffDto staffDto = new StaffDto();
+            staffDto.setId(staffCollection.getId());
+            staffDto.setIsManager(staffCollection.getIsManager());
+            staffDto.setType("Collection Staff");
+            User user = staffCollection.getUser();
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDto.setLastName(user.getLastName());
+            userDto.setFirstName(user.getFirstName());
+            userDto.setAddress(user.getAddress());
+            userDto.setPhoneNumber(user.getPhoneNumber());
+            userDto.setUsername(user.getUsername());
+            userDto.setPassword(user.getPassword());
+            staffDto.setUserDto(userDto);
+
+            //
+            PointDto pointDto = new PointDto();
+            pointDto.setId(collectionPoint.getId());
+            pointDto.setName(collectionPoint.getName());
+            pointDto.setAddress(collectionPoint.getAddress());
+            staffDto.setPointDto(pointDto);
+            staffDtoList.add(staffDto);
+        }
+        return staffDtoList;
     }
 
     @Override
