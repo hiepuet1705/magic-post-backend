@@ -22,7 +22,7 @@ public class ColManagerController {
     }
 
     @GetMapping("/sent-packages")
-    @PreAuthorize("hasRole('HEADCOL)")
+    @PreAuthorize("hasRole('HEADCOL')")
     public ResponseEntity<List<Package>> getSentPackagesInACollectionPoint(){
 
         List<Package> packages = colManagerService.getSentPackageInACollectionPoint();
@@ -31,7 +31,7 @@ public class ColManagerController {
     }
     @GetMapping("/curr-packages")
     @PreAuthorize("hasRole('HEADCOL')")
-    public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(){
+    public ResponseEntity<List<Package>> getCurrPackagesInACollectionPoint(){
         List<Package> packages = colManagerService.getCurrPackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
