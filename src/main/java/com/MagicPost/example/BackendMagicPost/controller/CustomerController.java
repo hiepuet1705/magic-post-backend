@@ -29,7 +29,7 @@ public class CustomerController {
         return new ResponseEntity<>(packages, HttpStatus.OK);
     }
     @GetMapping("/package/{packageIdHash}")
-    @PreAuthorize("hasRole('CUSTOMER')")
+
     public ResponseEntity<PackageInfoDto> getPackageFlowByPackageId(@PathVariable("packageIdHash") String packageIdHash){
         PackageInfoDto PackageInfoDto = customerService.trackingSinglePackage(packageIdHash);
         return new ResponseEntity<>(PackageInfoDto, HttpStatus.OK);

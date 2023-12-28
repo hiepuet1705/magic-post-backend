@@ -71,11 +71,8 @@ public class CustomerServiceImp implements CustomerService {
     @Override
     public PackageInfoDto trackingSinglePackage(String packageIdHash) {
         // find receipt
-        Long currentUserId = userService.getCurrentUserId();
+
         Package aPackage = packageRepository.getPackageByHashId(packageIdHash);
-        if (!aPackage.getSender().getUser().getId().equals(currentUserId)) {
-            throw new CustomApiException(HttpStatus.CONFLICT, "Conflict between customer and packageId");
-        }
         PackageInfoDto packageInfoDto = new PackageInfoDto();
         packageInfoDto.setPackageId(aPackage.getId());
         packageInfoDto.setStatus(aPackage.getStatus());
