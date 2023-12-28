@@ -155,10 +155,14 @@ public class CustomerServiceImp implements CustomerService {
 
         packageInfoDto.setFirstTranPoint(firstPointDto);
         packageInfoDto.setFirstTranPointStatus(customerReceipt.getStatus());
+        packageInfoDto.setTimeArriveFirstPoint(customerReceipt.getTime());
         DeliveryReceiptTC deliveryReceiptTC = deliveryReceiptTCRepository.getDeliveryReceiptTCByPackageId(aPackage.getId());
         if(deliveryReceiptTC!= null){
             packageInfoDto.setFirstColPoint(secondPointDto);
             packageInfoDto.setFirstColPointStatus(deliveryReceiptTC.getStatus());
+            if(deliveryReceiptTC.getStatus().equals(ReceiptStatus.TRANSFERED)){
+                packageInfoDto.setTimeArriveFirstPoint(deliveryReceiptTC.getTime());
+            }
 
         }
         else {
@@ -172,6 +176,7 @@ public class CustomerServiceImp implements CustomerService {
             if(deliveryReceiptCC!= null){
 
                 packageInfoDto.setSecondColPointStatus(deliveryReceiptCC.getStatus());
+                packageInfoDto.setTimeArriveSecondColPoint(deliveryReceiptCC.getTime());
 
             }
         }
@@ -179,6 +184,7 @@ public class CustomerServiceImp implements CustomerService {
             DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.getDeliveryReceiptCTByPackageId(aPackage.getId());
             if(deliveryReceiptCT!= null){
                 packageInfoDto.setSecondTranPointStatus(deliveryReceiptCT.getStatus());
+                packageInfoDto.setTimeArriveSecondTranPoint(deliveryReceiptCT.getTime());
             }
         }
         return packageInfoDto;

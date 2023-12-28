@@ -37,8 +37,8 @@ public class Package {
     private String hashKey="";
 
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne()
     @JoinColumn( name = "sender_id")
     private Customer sender;
 
