@@ -4,6 +4,7 @@ import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
 import com.MagicPost.example.BackendMagicPost.payload.PackageInfoDto;
 import com.MagicPost.example.BackendMagicPost.payload.PointDto;
+import com.MagicPost.example.BackendMagicPost.payload.UserDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
@@ -88,6 +89,16 @@ public class CustomerServiceImp implements CustomerService {
         packageInfoDto.setReceiverDistrict(aPackage.getReceiverDistrict());
         packageInfoDto.setReceiverPhoneNumber(aPackage.getReceiverPhoneNumber());
         packageInfoDto.setHashKey(aPackage.getHashKey());
+        UserDto userDto = new UserDto();
+        User user = aPackage.getSender().getUser();
+        userDto.setId(user.getId());
+        userDto.setAddress(user.getAddress());
+        userDto.setLastName(user.getLastName());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setUsername(user.getUsername());
+        userDto.setPassword(user.getPassword());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        packageInfoDto.setUserDto(userDto);
 
         if (aPackage.getStatus().equals(PackageStatus.SHIP_DONE) ||
                 !aPackage.getStatus().equals(PackageStatus.RETURNED_TO_TRANSACTION_POINT)) {

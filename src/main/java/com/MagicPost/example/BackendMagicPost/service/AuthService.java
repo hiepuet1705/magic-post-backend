@@ -1,15 +1,18 @@
 package com.MagicPost.example.BackendMagicPost.service;
 
+import com.MagicPost.example.BackendMagicPost.entity.Customer;
+import com.MagicPost.example.BackendMagicPost.entity.User;
 import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.payload.LoginDto;
 
 import com.MagicPost.example.BackendMagicPost.payload.StaffRegisterDto;
+import com.MagicPost.example.BackendMagicPost.payload.UserDto;
 
 public interface AuthService {
     String login(LoginDto loginDto);
 
-    String register(CustomerRegisterDto registerDto);
+    UserDto changePassword(UserDto user);
 
-    String createAccountForStaffTran(StaffRegisterDto staffRegisterDto);
-    String createAccountForStaffCol(StaffRegisterDto staffRegisterDto);
+    Customer register(CustomerRegisterDto registerDto);
+
 }

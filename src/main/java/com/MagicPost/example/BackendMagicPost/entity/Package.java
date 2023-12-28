@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -36,9 +37,16 @@ public class Package {
     @Column(unique = true)
     private String hashKey="";
 
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
 
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn( name = "sender_id")
     private Customer sender;
 

@@ -26,6 +26,8 @@ public class PackageInfoDto {
     private String receiverProvince;
     private String receiverDistrict;
     private String receiverPhoneNumber;
+
+    private UserDto userDto;
     private String hashKey="";
 
     private List<PointDto> pointHistoryDtoList = new ArrayList<>();

@@ -4,14 +4,21 @@ package com.MagicPost.example.BackendMagicPost.service;
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
+import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import com.MagicPost.example.BackendMagicPost.utils.PackageStatus;
 import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +44,8 @@ public class StaffTranServiceImp implements StaffTranService {
 
     private UserService userService;
 
+    private AuthService authService;
+
     private PasswordEncoder passwordEncoder;
 
 
@@ -50,7 +59,8 @@ public class StaffTranServiceImp implements StaffTranService {
                                DeliveryReceiptToReceiverRepository deliveryReceiptToReceiverRepository,
                                PackageRepository packageRepository,
                                UserService userService,
-                               PasswordEncoder passwordEncoder
+                               PasswordEncoder passwordEncoder,
+                               AuthService authService
                                 ) {
         this.staffTransactionRepository = staffTransactionRepository;
         this.customerRepository = customerRepository;
@@ -63,6 +73,7 @@ public class StaffTranServiceImp implements StaffTranService {
         this.deliveryReceiptToReceiverRepository = deliveryReceiptToReceiverRepository;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.authService = authService;
     }
 
     @Override
@@ -89,6 +100,25 @@ public class StaffTranServiceImp implements StaffTranService {
         Package savedPackage = packageRepository.save(aPackage);
         return savedPackage;
     }
+
+    @Override
+    public Package createPackageStrangeCustomer(Package aPackage, CustomerRegisterDto customerRegisterDto) {
+        Long transactionPointId = getTranPointIdOfCurrentStaff();
+        TransactionPoint transactionPoint = transactionPointRepository.findById(transactionPointId).
+                orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction not found"));
+        Customer newCustomer = authService.register(customerRegisterDto);
+        aPackage.setSender(newCustomer);
+        aPackage.setTransactionPoint(transactionPointId);
+        aPackage.setCollectionPoint(0L);
+        aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
+        String pkKey =  passwordEncoder.encode
+                (aPackage.getName() + aPackage.getId()).replaceAll("[$./]", "").substring(0,12);
+        aPackage.setHashKey(pkKey);
+        Package savedPackage = packageRepository.save(aPackage);
+        return savedPackage;
+    }
+
+
 
     @Override
     public Long getTranPointIdOfCurrentStaff() {
@@ -258,6 +288,28 @@ public class StaffTranServiceImp implements StaffTranService {
     public CustomerReceipt getSingleCustomerReceipt(Long customerReceiptId) {
         return customerReceiptRepository.findById(customerReceiptId).get();
     }
+
+//    @Override
+//    public byte[] printPdf(Long customerReceiptId) throws DocumentException {
+//
+//        CustomerReceipt customerReceipt = customerReceiptRepository.findById(customerReceiptId)
+//                .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"customer receipt not found"));
+//        if(!customerReceipt.getTransactionPointReceive().getId().equals(getTranPointIdOfCurrentStaff())){
+//            throw new RuntimeException("Conflict");
+//        }
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        Document document = new Document();
+//        PdfWriter.getInstance(document, baos);
+//        document.open();
+//
+//        document.add(new Paragraph("Name: " + customerReceipt.getName()));
+//        document.add(new Paragraph("Description: " + customerReceipt.getDescription()));
+//        document.add(new Paragraph("Phone: " + customerReceipt.getReceiverPhoneNumber()));
+//
+//        document.close();
+//
+//        return baos.toByteArray();
+//    }
 
 
 }

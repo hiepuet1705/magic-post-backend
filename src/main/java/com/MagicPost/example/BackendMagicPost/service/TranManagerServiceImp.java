@@ -6,13 +6,18 @@ import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
 import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
+import com.MagicPost.example.BackendMagicPost.payload.StaffRegisterDto;
 import com.MagicPost.example.BackendMagicPost.payload.UserDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
+import com.MagicPost.example.BackendMagicPost.utils.Constant;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +33,9 @@ public class TranManagerServiceImp implements TranManagerService {
     private CustomerReceiptRepository customerReceiptRepository;
 
     private UserService userService;
+    private RoleRepository roleRepository;
+
+    private PasswordEncoder passwordEncoder;
 
     public TranManagerServiceImp(TransactionPointRepository transactionPointRepository,
                                  StaffTransactionRepository staffTransactionRepository,
@@ -35,7 +43,9 @@ public class TranManagerServiceImp implements TranManagerService {
                                  DeliveryReceiptCTRepository deliveryReceiptCTRepository,
                                  CustomerReceiptRepository customerReceiptRepository,
                                  UserService userService,
-                                 PackageRepository packageRepository) {
+                                 PackageRepository packageRepository,
+                                 PasswordEncoder passwordEncoder,
+                                 RoleRepository roleRepository) {
         this.transactionPointRepository = transactionPointRepository;
         this.staffTransactionRepository = staffTransactionRepository;
         this.deliveryReceiptTCRepository = deliveryReceiptTCRepository;
@@ -43,6 +53,8 @@ public class TranManagerServiceImp implements TranManagerService {
         this.customerReceiptRepository = customerReceiptRepository;
         this.packageRepository = packageRepository;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -136,5 +148,31 @@ public class TranManagerServiceImp implements TranManagerService {
                 .orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"))).toList();
         return packages;
 
+    }
+
+    @Override
+    public String createAccountForStaffTran(StaffRegisterDto staffRegisterDto) {
+        Long currentTranId = getTranPointIdOfCurrentStaff();
+        TransactionPoint transactionPoint = transactionPointRepository.findById(currentTranId)
+                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point Not Found"));
+        StaffTransaction staffTransaction = new StaffTransaction();
+        staffTransaction.setTransactionPoint(transactionPoint);
+        // User
+        User userStaff = new User();
+        userStaff.setFirstName(staffRegisterDto.getFirstName());
+        userStaff.setLastName(staffRegisterDto.getLastName());
+        userStaff.setPhoneNumber(staffRegisterDto.getPhoneNumber());
+        userStaff.setAddress(staffRegisterDto.getAddress());
+        userStaff.setUsername(staffRegisterDto.getUsername());
+        userStaff.setPassword(passwordEncoder.encode(staffRegisterDto.getPassword()));
+
+        Set<Role> roles = new HashSet<>();
+        Role userRole = roleRepository.findByName(Constant.roleStaffTran).get();
+        roles.add(userRole);
+        userStaff.setRoles(roles);
+        staffTransaction.setUser(userStaff);
+        staffTransactionRepository.save(staffTransaction);
+
+        return "staff trans create successfully";
     }
 }

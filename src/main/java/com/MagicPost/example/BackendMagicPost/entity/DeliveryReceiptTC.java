@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "deliveryReceiptTC")
 @NoArgsConstructor
@@ -31,6 +33,13 @@ public class DeliveryReceiptTC {
     private String type="";
 
     private String status = ReceiptStatus.NOT_ARRIVE;
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
     @Transient
     private String sentPointAddress;
 

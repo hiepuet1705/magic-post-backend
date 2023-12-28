@@ -17,5 +17,4 @@ public class StaffRegisterDto {
 
     private String phoneNumber;
     private String address;
-    private Long pointId;
 }

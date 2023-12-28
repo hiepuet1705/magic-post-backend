@@ -2,14 +2,12 @@ package com.MagicPost.example.BackendMagicPost.controller;
 
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
+import com.MagicPost.example.BackendMagicPost.payload.StaffRegisterDto;
 import com.MagicPost.example.BackendMagicPost.service.ColManagerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -50,6 +48,12 @@ public class ColManagerController {
         List<StaffDto> staffDtos = colManagerService.getAllStaffInACollectionPoint();
         return new ResponseEntity<>(staffDtos, HttpStatus.OK);
 
+    }
+    @PostMapping("/register/staff")
+    @PreAuthorize("hasRole('HEADCOL')")
+    public ResponseEntity<String> createAccountForStaffCol(@RequestBody StaffRegisterDto staffRegisterDto){
+        String response = colManagerService.createAccountForStaffCol(staffRegisterDto);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
 

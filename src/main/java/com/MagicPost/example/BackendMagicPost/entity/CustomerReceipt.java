@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.print.attribute.standard.MediaSize;
+import java.util.Date;
 
 @Entity
 @Table(name = "customer_receipt")
@@ -36,6 +37,14 @@ public class CustomerReceipt {
     private String fee="";
 
     private String status = ReceiptStatus.TRANSFERED;
+
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
 
     @ManyToOne
     @JsonBackReference

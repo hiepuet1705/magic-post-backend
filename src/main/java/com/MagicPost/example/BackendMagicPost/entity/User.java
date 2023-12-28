@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.Set;
 
 @Setter
@@ -24,10 +25,18 @@ public class User {
     private String firstName;
 
     private String address;
+
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
+    @Column(unique = true)
     private String phoneNumber;
 
     @Column(nullable = false, unique = true)
-    // validation
     @Email
     private String username;
     @Column(nullable = false)

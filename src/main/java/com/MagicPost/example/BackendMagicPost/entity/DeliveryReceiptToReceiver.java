@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "receiptReceiver")
 @Setter
@@ -34,6 +36,13 @@ public class DeliveryReceiptToReceiver {
     private String sentPointAddress;
     @Transient
     private String packageName;
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
 
 
     @ManyToOne

@@ -4,8 +4,14 @@ import com.MagicPost.example.BackendMagicPost.entity.CustomerReceipt;
 import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptTC;
 import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptToReceiver;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
+import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.service.StaffTranService;
+import com.itextpdf.text.DocumentException;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +33,15 @@ public class StaffTranController {
                                                  @PathVariable("customerId") Long customerId
     ) {
         Package savedPackage = staffTranService.createPackage(aPackage,customerId);
+        return new ResponseEntity<>(savedPackage,HttpStatus.OK);
+
+    }
+    @PostMapping("/package/stranger")
+    @PreAuthorize("hasRole('OFFICERTRAN')")
+    public ResponseEntity<Package> createPackageStrangeCustomer(@RequestBody Package aPackage,
+                                                                @RequestBody CustomerRegisterDto customerRegisterDto
+                                                                ) {
+        Package savedPackage = staffTranService.createPackageStrangeCustomer(aPackage,customerRegisterDto);
         return new ResponseEntity<>(savedPackage,HttpStatus.OK);
 
     }
@@ -103,6 +118,8 @@ public class StaffTranController {
 
         return new ResponseEntity<>(completedDeliveryReceiptToReceivers,HttpStatus.OK);
     }
+
+
 
 
 

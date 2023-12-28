@@ -8,6 +8,7 @@ import com.MagicPost.example.BackendMagicPost.payload.LoginDto;
 
 
 import com.MagicPost.example.BackendMagicPost.payload.StaffRegisterDto;
+import com.MagicPost.example.BackendMagicPost.payload.UserDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import com.MagicPost.example.BackendMagicPost.security.JwtTokenProvider;
 import com.MagicPost.example.BackendMagicPost.utils.Constant;
@@ -41,6 +42,8 @@ public class AuthServiceImpl implements AuthService {
 
     private CollectionPointRepository collectionPointRepository;
 
+    private UserService userService;
+
     public AuthServiceImpl(UserRepository userRepository,
                            CustomerRepository customerRepository,
                            RoleRepository roleRepository,
@@ -50,7 +53,8 @@ public class AuthServiceImpl implements AuthService {
                            StaffTransactionRepository staffTransactionRepository,
                            StaffCollectionRepository staffCollectionRepository,
                            TransactionPointRepository transactionPointRepository,
-                           CollectionPointRepository collectionPointRepository) {
+                           CollectionPointRepository collectionPointRepository,
+                           UserService userService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
@@ -61,6 +65,7 @@ public class AuthServiceImpl implements AuthService {
         this.staffCollectionRepository = staffCollectionRepository;
         this.transactionPointRepository = transactionPointRepository;
         this.collectionPointRepository = collectionPointRepository;
+        this.userService = userService;
     }
 
     //
@@ -79,8 +84,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String  register(CustomerRegisterDto registerDto) {
+    public UserDto changePassword(UserDto user) {
+        return null;
+    }
 
+
+    @Override
+    public Customer register(CustomerRegisterDto registerDto) {
         if (userRepository.existsByUsername(registerDto.getUsername())) {
             throw new CustomApiException(HttpStatus.BAD_REQUEST, "Username is already exists");
         }
@@ -102,61 +112,12 @@ public class AuthServiceImpl implements AuthService {
         Customer customer = new Customer();
         customer.setUser(user);
 
-        customerRepository.save(customer);
-        return "User register successfully";
+        Customer savedCustomer = customerRepository.save(customer);
+        return savedCustomer;
     }
 
-    @Override
-    public String createAccountForStaffTran(StaffRegisterDto staffRegisterDto) {
-        TransactionPoint transactionPoint = transactionPointRepository.findById(staffRegisterDto.getPointId())
-                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction Point Not Found"));
-        StaffTransaction staffTransaction = new StaffTransaction();
-        staffTransaction.setTransactionPoint(transactionPoint);
-
-        // User
-        User userStaff = new User();
-        userStaff.setFirstName(staffRegisterDto.getFirstName());
-        userStaff.setLastName(staffRegisterDto.getLastName());
-        userStaff.setPhoneNumber(staffRegisterDto.getPhoneNumber());
-        userStaff.setAddress(staffRegisterDto.getAddress());
-        userStaff.setUsername(staffRegisterDto.getUsername());
-        userStaff.setPassword(passwordEncoder.encode(staffRegisterDto.getPassword()));
-
-        Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName(Constant.roleStaffTran).get();
-        roles.add(userRole);
-        userStaff.setRoles(roles);
-        staffTransaction.setUser(userStaff);
-        staffTransactionRepository.save(staffTransaction);
-
-        return "staff trans create successfully";
 
 
-    }
 
-    @Override
-    public String createAccountForStaffCol(StaffRegisterDto staffRegisterDto) {
-        CollectionPoint collectionPoint = collectionPointRepository.findById(staffRegisterDto.getPointId())
-                .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST, "Collection Point not found"));
-        StaffCollection staffCollection = new StaffCollection();
-        staffCollection.setCollectionPoint(collectionPoint);
-
-        User userStaff = new User();
-        userStaff.setFirstName(staffRegisterDto.getFirstName());
-        userStaff.setLastName(staffRegisterDto.getLastName());
-        userStaff.setPhoneNumber(staffRegisterDto.getPhoneNumber());
-        userStaff.setAddress(staffRegisterDto.getAddress());
-        userStaff.setUsername(staffRegisterDto.getUsername());
-        userStaff.setPassword(passwordEncoder.encode(staffRegisterDto.getPassword()));
-        
-        Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName(Constant.roleStaffCol).get();
-        roles.add(userRole);
-        userStaff.setRoles(roles);
-        staffCollection.setUser(userStaff);
-        staffCollectionRepository.save(staffCollection);
-
-        return "staff Col create successfully";
-    }
 }
 
