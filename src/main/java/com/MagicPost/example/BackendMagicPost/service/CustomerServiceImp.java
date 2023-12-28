@@ -169,7 +169,7 @@ public class CustomerServiceImp implements CustomerService {
             packageInfoDto.setFirstColPoint(secondPointDto);
             packageInfoDto.setFirstColPointStatus(deliveryReceiptTC.getStatus());
             if(deliveryReceiptTC.getStatus().equals(ReceiptStatus.TRANSFERED)){
-                packageInfoDto.setTimeArriveFirstPoint(deliveryReceiptTC.getTime());
+                packageInfoDto.setTimeArriveFirstColPoint(deliveryReceiptTC.getTime());
             }
 
         }

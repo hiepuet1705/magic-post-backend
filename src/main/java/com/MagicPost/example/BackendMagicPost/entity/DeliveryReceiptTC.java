@@ -17,7 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Setter
 @Getter
-public class DeliveryReceiptTC {
+public class    DeliveryReceiptTC {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,13 +33,6 @@ public class DeliveryReceiptTC {
     private String type="";
 
     private String status = ReceiptStatus.NOT_ARRIVE;
-    @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-    @PrePersist
-    protected void onCreate() {
-        createdAt = new Date();
-    }
     @Transient
     private String sentPointAddress;
 
