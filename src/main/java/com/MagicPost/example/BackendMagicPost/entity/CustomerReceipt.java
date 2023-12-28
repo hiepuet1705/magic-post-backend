@@ -33,6 +33,7 @@ public class CustomerReceipt {
     private int weight = 0 ;
     private String receiverName="";
     private String receiverPhoneNumber="";
+    private String hashKey="";
 
     private String fee="";
 
