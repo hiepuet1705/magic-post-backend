@@ -9,6 +9,8 @@ import com.MagicPost.example.BackendMagicPost.utils.ReceiptStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class StaffColServiceImp implements StaffColService {
     private DeliveryReceiptTCRepository deliveryReceiptTCRepository;
@@ -69,6 +71,7 @@ public class StaffColServiceImp implements StaffColService {
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
         //Update status of receipt and Package
         deliveryReceiptTC.setStatus(ReceiptStatus.TRANSFERED);
+        deliveryReceiptTC.setTime(new Date().toString());
         aPackage.setStatus(PackageStatus.AT_COLLECTION_POINT);
         // Update
         aPackage.setTransactionPoint(0L);
@@ -96,6 +99,7 @@ public class StaffColServiceImp implements StaffColService {
         }
         //Update status of receipt and Package
         deliveryReceiptCC.setStatus(ReceiptStatus.TRANSFERED);
+        deliveryReceiptCC.setTime(new Date().toString());
         aPackage.setStatus(PackageStatus.AT_COLLECTION_POINT);
 
         // Update
