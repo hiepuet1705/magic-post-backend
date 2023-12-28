@@ -14,11 +14,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PackageDto {
     private Long id;
+    private String status = PackageStatus.AT_TRANSACTION_POINT;
     private int weight;
     private String name;
     private String description;
     private String type;
-    private String status = PackageStatus.AT_TRANSACTION_POINT;
+
     private String receiverFirstName;
     private String receiverLastName;
     private String receiverProvince;

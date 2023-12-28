@@ -25,6 +25,9 @@ public interface PackageRepository extends JpaRepository<Package,Long> {
     @Query("SELECT p FROM Package p WHERE p.sender.id = :customerId")
     List<Package> getPackagesByCustomerId(@Param("customerId") Long customerId);
 
+    @Query("SELECT p FROM Package p WHERE p.hashKey = :hashKey")
+    Package getPackageByHashId(@Param("hashKey") String hashId);
+
 
 
 

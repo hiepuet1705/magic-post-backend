@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -169,6 +170,7 @@ public class StaffTranServiceImp implements StaffTranService {
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
 
         deliveryReceiptCT.setStatus(ReceiptStatus.TRANSFERED);
+//        deliveryReceiptCT.setTime(new Date().toString());
 
         aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
 

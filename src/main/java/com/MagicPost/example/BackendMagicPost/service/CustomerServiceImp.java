@@ -2,7 +2,7 @@ package com.MagicPost.example.BackendMagicPost.service;
 
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
-import com.MagicPost.example.BackendMagicPost.payload.PackageFlowDto;
+import com.MagicPost.example.BackendMagicPost.payload.PackageInfoDto;
 import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
@@ -68,17 +68,27 @@ public class CustomerServiceImp implements CustomerService {
         return packages;
     }
     @Override
-    public PackageFlowDto trackingSinglePackage(Long packageId) {
+    public PackageInfoDto trackingSinglePackage(String packageIdHash) {
         // find receipt
         Long currentUserId = userService.getCurrentUserId();
-        Package aPackage = packageRepository.
-                findById(packageId).orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST, "Package not found"));
+        Package aPackage = packageRepository.getPackageByHashId(packageIdHash);
         if (!aPackage.getSender().getUser().getId().equals(currentUserId)) {
             throw new CustomApiException(HttpStatus.CONFLICT, "Conflict between customer and packageId");
         }
-        PackageFlowDto packageFlowDto = new PackageFlowDto();
-        packageFlowDto.setPackageId(packageId);
-        packageFlowDto.setStatus(aPackage.getStatus());
+        PackageInfoDto packageInfoDto = new PackageInfoDto();
+        packageInfoDto.setPackageId(aPackage.getId());
+        packageInfoDto.setStatus(aPackage.getStatus());
+        packageInfoDto.setName(aPackage.getName());
+        packageInfoDto.setWeight(aPackage.getWeight());
+        packageInfoDto.setDescription(aPackage.getDescription());
+        packageInfoDto.setType(aPackage.getType());
+        packageInfoDto.setReceiverFirstName(aPackage.getReceiverFirstName());
+        packageInfoDto.setReceiverLastName(aPackage.getReceiverLastName());
+        packageInfoDto.setReceiverProvince(aPackage.getReceiverProvince());
+        packageInfoDto.setReceiverDistrict(aPackage.getReceiverDistrict());
+        packageInfoDto.setReceiverPhoneNumber(aPackage.getReceiverPhoneNumber());
+        packageInfoDto.setHashKey(aPackage.getHashKey());
+
         if (aPackage.getStatus().equals(PackageStatus.SHIP_DONE) ||
                 !aPackage.getStatus().equals(PackageStatus.RETURNED_TO_TRANSACTION_POINT)) {
             PointDto pointDto = new PointDto();
@@ -91,7 +101,7 @@ public class CustomerServiceImp implements CustomerService {
                 pointDto.setName(collectionPoint.getName());
                 pointDto.setDistrict(collectionPoint.getDistrict());
                 pointDto.setProvince(collectionPoint.getProvince());
-                packageFlowDto.setCurrentPoint(pointDto);
+                packageInfoDto.setCurrentPoint(pointDto);
             } else if (aPackage.getTransactionPoint() != 0L) {
                 TransactionPoint transactionPoint = transactionPointRepository.
                         findById(aPackage.getTransactionPoint()).
@@ -100,10 +110,13 @@ public class CustomerServiceImp implements CustomerService {
                 pointDto.setName(transactionPoint.getName());
                 pointDto.setDistrict(transactionPoint.getDistrict());
                 pointDto.setProvince(transactionPoint.getProvince());
-                packageFlowDto.setCurrentPoint(pointDto);
+                packageInfoDto.setCurrentPoint(pointDto);
             }
         }
-        CustomerReceipt customerReceipt = customerReceiptRepository.getCustomerReceiptByPackageId(packageId);
+        CustomerReceipt customerReceipt = customerReceiptRepository.getCustomerReceiptByPackageId(aPackage.getId());
+        if(customerReceipt==null){
+            throw new CustomApiException(HttpStatus.BAD_REQUEST,"Haven't create customer receipt yet");
+        }
         //
         TransactionPoint firstTranPoint = customerReceipt.getTransactionPointReceive();
         CollectionPoint firstCollectionPoint = collectionPointRepository.getCollectionPointByProvince(firstTranPoint.getProvince());
@@ -138,38 +151,36 @@ public class CustomerServiceImp implements CustomerService {
         pointDtos.add(secondPointDto);
         pointDtos.add(thirdPointDto);
         pointDtos.add(fourthPointDto);
-        packageFlowDto.setPointHistoryDtoList(pointDtos);
+        packageInfoDto.setPointHistoryDtoList(pointDtos);
 
-        if(customerReceipt!= null){
-            packageFlowDto.setFirstTranPoint(firstPointDto);
-            packageFlowDto.setFirstTranPointStatus(customerReceipt.getStatus());
-        }
-        DeliveryReceiptTC deliveryReceiptTC = deliveryReceiptTCRepository.getDeliveryReceiptTCByPackageId(packageId);
+        packageInfoDto.setFirstTranPoint(firstPointDto);
+        packageInfoDto.setFirstTranPointStatus(customerReceipt.getStatus());
+        DeliveryReceiptTC deliveryReceiptTC = deliveryReceiptTCRepository.getDeliveryReceiptTCByPackageId(aPackage.getId());
         if(deliveryReceiptTC!= null){
-            packageFlowDto.setFirstColPoint(secondPointDto);
-            packageFlowDto.setFirstColPointStatus(deliveryReceiptTC.getStatus());
+            packageInfoDto.setFirstColPoint(secondPointDto);
+            packageInfoDto.setFirstColPointStatus(deliveryReceiptTC.getStatus());
 
         }
         else {
-            packageFlowDto.setFirstColPoint(secondPointDto);
+            packageInfoDto.setFirstColPoint(secondPointDto);
         }
         //set point
-        packageFlowDto.setSecondColPoint(thirdPointDto);
-        packageFlowDto.setSecondTranPoint(fourthPointDto);
-        if(packageFlowDto.getFirstColPointStatus().equals(ReceiptStatus.TRANSFERED)){
-            DeliveryReceiptCC deliveryReceiptCC = deliveryReceiptCCRepository.getDeliveryReceiptCCByPackageId(packageId);
+        packageInfoDto.setSecondColPoint(thirdPointDto);
+        packageInfoDto.setSecondTranPoint(fourthPointDto);
+        if(packageInfoDto.getFirstColPointStatus().equals(ReceiptStatus.TRANSFERED)){
+            DeliveryReceiptCC deliveryReceiptCC = deliveryReceiptCCRepository.getDeliveryReceiptCCByPackageId(aPackage.getId());
             if(deliveryReceiptCC!= null){
 
-                packageFlowDto.setSecondColPointStatus(deliveryReceiptCC.getStatus());
+                packageInfoDto.setSecondColPointStatus(deliveryReceiptCC.getStatus());
 
             }
         }
-        if(packageFlowDto.getSecondColPointStatus().equals(ReceiptStatus.TRANSFERED)){
-            DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.getDeliveryReceiptCTByPackageId(packageId);
+        if(packageInfoDto.getSecondColPointStatus().equals(ReceiptStatus.TRANSFERED)){
+            DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.getDeliveryReceiptCTByPackageId(aPackage.getId());
             if(deliveryReceiptCT!= null){
-                packageFlowDto.setSecondTranPointStatus(deliveryReceiptCT.getStatus());
+                packageInfoDto.setSecondTranPointStatus(deliveryReceiptCT.getStatus());
             }
         }
-        return packageFlowDto;
+        return packageInfoDto;
     }
 }
