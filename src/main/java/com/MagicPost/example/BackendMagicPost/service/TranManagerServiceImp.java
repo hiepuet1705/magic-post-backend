@@ -1,6 +1,7 @@
 package com.MagicPost.example.BackendMagicPost.service;
 
 
+import com.MagicPost.example.BackendMagicPost.controller.dtos.user.EditStaffRequest;
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
@@ -25,6 +26,8 @@ public class TranManagerServiceImp implements TranManagerService {
     private TransactionPointRepository transactionPointRepository;
     private StaffTransactionRepository staffTransactionRepository;
 
+    private UserRepository userRepository;
+
     private PackageRepository packageRepository;
 
     private DeliveryReceiptTCRepository deliveryReceiptTCRepository;
@@ -39,6 +42,7 @@ public class TranManagerServiceImp implements TranManagerService {
 
     public TranManagerServiceImp(TransactionPointRepository transactionPointRepository,
                                  StaffTransactionRepository staffTransactionRepository,
+                                 UserRepository userRepository,
                                  DeliveryReceiptTCRepository deliveryReceiptTCRepository,
                                  DeliveryReceiptCTRepository deliveryReceiptCTRepository,
                                  CustomerReceiptRepository customerReceiptRepository,
@@ -46,6 +50,7 @@ public class TranManagerServiceImp implements TranManagerService {
                                  PackageRepository packageRepository,
                                  PasswordEncoder passwordEncoder,
                                  RoleRepository roleRepository) {
+        this.userRepository = userRepository;
         this.transactionPointRepository = transactionPointRepository;
         this.staffTransactionRepository = staffTransactionRepository;
         this.deliveryReceiptTCRepository = deliveryReceiptTCRepository;
@@ -98,6 +103,61 @@ public class TranManagerServiceImp implements TranManagerService {
             staffDtoList.add(staffDto);
         }
         return staffDtoList;
+    }
+
+    @Override
+    public StaffDto getStaffById(Long staffId) {
+        StaffTransaction staffTransaction = staffTransactionRepository.findStaffTransactionByUserId(staffId);
+        if (staffTransaction == null)
+            throw new CustomApiException(HttpStatus.BAD_REQUEST,"Staff not found");
+        StaffDto staffDto = new StaffDto();
+        staffDto.setId(staffTransaction.getId());
+        staffDto.setIsManager(staffTransaction.getIsManager());
+        staffDto.setType("Transaction Staff");
+        User user = staffTransaction.getUser();
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setLastName(user.getLastName());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setAddress(user.getAddress());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        userDto.setUsername(user.getUsername());
+        userDto.setPassword(user.getPassword());
+        staffDto.setUserDto(userDto);
+
+        //
+        PointDto pointDto = new PointDto();
+        pointDto.setId(staffTransaction.getTransactionPoint().getId());
+        pointDto.setName(staffTransaction.getTransactionPoint().getName());
+        pointDto.setDistrict(staffTransaction.getTransactionPoint().getDistrict());
+        pointDto.setProvince(staffTransaction.getTransactionPoint().getProvince());
+        staffDto.setPointDto(pointDto);
+
+        return staffDto;
+    }
+
+    @Override
+    public String editStaff(Long staffId, EditStaffRequest editStaffRequest) {
+        StaffTransaction staffTransaction = staffTransactionRepository.findStaffTransactionByUserId(staffId);
+        if (staffTransaction == null)
+            throw new CustomApiException(HttpStatus.BAD_REQUEST,"Staff not found");
+
+        User user = staffTransaction.getUser();
+        user.setFirstName(editStaffRequest.getFirstName());
+        user.setLastName(editStaffRequest.getLastName());
+        user.setPhoneNumber(editStaffRequest.getPhoneNumber());
+        user.setAddress(editStaffRequest.getAddress());
+        user.setUsername(editStaffRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(editStaffRequest.getPassword()));
+        staffTransaction.setUser(user);
+        staffTransactionRepository.save(staffTransaction);
+        return "Edit staff successfully";
+    }
+
+    @Override
+    public String deleteStaff(Long staffId) {
+        // lam ho Hai vs Hiep oiii
+        return null;
     }
 
     @Override
