@@ -61,7 +61,7 @@ public class StaffColController {
     }
 
     @GetMapping("/sent-packages")
-    @PreAuthorize("hasRole('HEADCOL')")
+    @PreAuthorize("hasRole('OFFICERCOL')")
     public ResponseEntity<List<Package>> getSentPackagesInACollectionPoint(){
 
         List<Package> packages = staffColService.getSentPackageInACollectionPoint();
@@ -69,14 +69,14 @@ public class StaffColController {
 
     }
     @GetMapping("/curr-packages")
-    @PreAuthorize("hasRole('HEADCOL')")
+    @PreAuthorize("hasRole('OFFICERCOL')")
     public ResponseEntity<List<Package>> getCurrPackagesInACollectionPoint(){
         List<Package> packages = staffColService.getCurrPackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
     @GetMapping("/rec-packages")
-    @PreAuthorize("hasRole('HEADCOL')")
+    @PreAuthorize("hasRole('OFFICERCOL')")
     public ResponseEntity<List<Package>> getReceivePackageInACollectionPoint(){
         List<Package> packages = staffColService.getReceivePackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
