@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface DeliveryReceiptCCRepository extends JpaRepository<DeliveryReceiptCC,Long> {
-    @Query("SELECT d FROM DeliveryReceiptCC d WHERE d.collectionPointSender.id = :colPointId")
+    @Query("SELECT d FROM DeliveryReceiptCC d WHERE d.collectionPointReceiver.id = :colPointId")
     public List<DeliveryReceiptCC> getDeliveryRReceiptCCByCollectionPointId(@Param("colPointId") Long colPointId);
 
     @Query("SELECT d FROM DeliveryReceiptCC d WHERE d.collectionPointSender.id = :colPointId AND d.status = 'TRANSFERED'")
