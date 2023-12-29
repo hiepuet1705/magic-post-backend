@@ -28,7 +28,4 @@ public class StaffTransaction {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "point_id")
     private TransactionPoint transactionPoint;
-
-
-
 }
