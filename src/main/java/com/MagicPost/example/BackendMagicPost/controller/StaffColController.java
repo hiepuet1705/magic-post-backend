@@ -31,7 +31,8 @@ public class StaffColController {
     }
     @PutMapping("/receipt-cc/confirm/{receiptCCId}")
     @PreAuthorize("hasRole('OFFICERCOL')")
-    public ResponseEntity<String> confirmReceiptFromOtherCollectionPoint(@PathVariable("receiptCCId") Long receiptCCId
+    public ResponseEntity<String> confirmReceiptFromOtherCollectionPoint(@PathVariable("receiptCCId")
+                                                                             Long receiptCCId
     ){
 
         String confirm = staffColService.confirmPackageFromOtherCollectionPoint(receiptCCId);
@@ -61,25 +62,34 @@ public class StaffColController {
     }
 
     @GetMapping("/sent-packages")
-    @PreAuthorize("hasRole('HEADCOL')")
+    @PreAuthorize("hasRole('OFFICERCOL')")
     public ResponseEntity<List<Package>> getSentPackagesInACollectionPoint(){
 
         List<Package> packages = staffColService.getSentPackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
+
     @GetMapping("/curr-packages")
-    @PreAuthorize("hasRole('HEADCOL')")
+    @PreAuthorize("hasRole('OFFICERCOL')")
     public ResponseEntity<List<Package>> getCurrPackagesInACollectionPoint(){
         List<Package> packages = staffColService.getCurrPackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
     @GetMapping("/rec-packages")
-    @PreAuthorize("hasRole('HEADCOL')")
+    @PreAuthorize("hasRole('OFFICERCOL')")
     public ResponseEntity<List<Package>> getReceivePackageInACollectionPoint(){
         List<Package> packages = staffColService.getReceivePackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
+    @GetMapping("/pending-packages")
+    @PreAuthorize("hasRole('OFFICERCOL')")
+    public ResponseEntity<List<Package>> getPendingPackagesInAColPoint(){
+        List<Package> packages = staffColService.getPendingPackageInACollectionPoint();
+        return new ResponseEntity<>(packages, HttpStatus.OK);
+
+    }
+
 }

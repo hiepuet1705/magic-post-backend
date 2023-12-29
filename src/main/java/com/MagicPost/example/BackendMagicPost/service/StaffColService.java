@@ -22,6 +22,8 @@ public interface StaffColService {
                                                      Long packageId);
     List<Package> getSentPackageInACollectionPoint();
 
+    List<Package> getPendingPackageInACollectionPoint();
+
     List<Package> getCurrPackageInACollectionPoint();
 
     List<Package> getReceivePackageInACollectionPoint();

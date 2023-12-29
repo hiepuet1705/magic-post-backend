@@ -26,13 +26,22 @@ public class    DeliveryReceiptTC {
 
     private String transport;
 
-    private String time;
+    private String timeArriveNextPoint;
     private String receiverName="";
 
 
     private String type="";
 
     private String status = ReceiptStatus.NOT_ARRIVE;
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
+
     @Transient
     private String sentPointAddress;
 
