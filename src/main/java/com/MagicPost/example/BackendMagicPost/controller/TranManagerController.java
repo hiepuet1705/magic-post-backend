@@ -3,6 +3,7 @@ package com.MagicPost.example.BackendMagicPost.controller;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
 import com.MagicPost.example.BackendMagicPost.payload.StaffRegisterDto;
+import com.MagicPost.example.BackendMagicPost.service.StaffTranService;
 import com.MagicPost.example.BackendMagicPost.service.TranManagerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,30 +16,32 @@ import java.util.List;
 @RequestMapping("api/manager/tran")
 public class TranManagerController {
     private TranManagerService tranManagerService;
+    private StaffTranService staffTranService;
 
-    public TranManagerController(TranManagerService tranManagerService) {
+    public TranManagerController(TranManagerService tranManagerService, StaffTranService staffTranService) {
         this.tranManagerService = tranManagerService;
+        this.staffTranService = staffTranService;
     }
 
     @GetMapping("/sent-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
     public ResponseEntity<List<Package>> getSentPackagesInATransactionPoint(){
 
-        List<Package> packages = tranManagerService.getSentPackageInATransactionPoint();
+        List<Package> packages = staffTranService.getSentPackageInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
     @GetMapping("/curr-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
     public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(){
-        List<Package> packages = tranManagerService.getCurrentPackagesInATransactionPoint();
+        List<Package> packages = staffTranService.getCurrentPackagesInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
     @GetMapping("/rec-packages")
     @PreAuthorize("hasRole('HEADTRAN')")
     public ResponseEntity<List<Package>> getReceivePackagesInATransactionPoint(){
-        List<Package> packages = tranManagerService.getReceivePackagesInATransactionPoint();
+        List<Package> packages = staffTranService.getReceivePackagesInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }

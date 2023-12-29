@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class StaffColServiceImp implements StaffColService {
@@ -173,6 +176,54 @@ public class StaffColServiceImp implements StaffColService {
         deliveryReceiptCT.setStatus(ReceiptStatus.TRANSFERING);
         DeliveryReceiptCT savedDeliveryReceiptCT =  deliveryReceiptCTRepository.save(deliveryReceiptCT);
         return savedDeliveryReceiptCT;
+    }
+    @Override
+    public List<Package> getSentPackageInACollectionPoint() {
+        Long currentCollectionPointId = getColPointIdOfCurrentStaff();
+        List<DeliveryReceiptCT> deliveryReceiptCTList = deliveryReceiptCTRepository.
+                getSentDeliveryReceiptCTByCollectionPointId(currentCollectionPointId);
+        List<DeliveryReceiptCC> deliveryReceiptCCList = deliveryReceiptCCRepository.
+                getSentDeliveryReceiptCCByCollectionPointId(currentCollectionPointId);
+        Set<Long> packageId = new HashSet<>();
+        for(DeliveryReceiptCT de : deliveryReceiptCTList){
+            packageId.add(de.getAPackage().getId());
+        }
+        for(DeliveryReceiptCC de : deliveryReceiptCCList){
+            packageId.add(de.getAPackage().getId());
+        }
+        List<Package> packages = packageId.stream().map(id -> packageRepository.findById(id)
+                .orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"))).toList();
+        return packages;
+    }
+
+
+
+    @Override
+    public List<Package> getCurrPackageInACollectionPoint() {
+        Long currentCollectionPoint = getColPointIdOfCurrentStaff();
+        List<Package> packages = packageRepository.getCurrentPackagesInCollectionPoint(currentCollectionPoint);
+        return packages;
+    }
+
+    @Override
+    public List<Package> getReceivePackageInACollectionPoint() {
+        Long currentCollectionPointId = getColPointIdOfCurrentStaff();
+        List<DeliveryReceiptCC> deliveryReceiptCCList = deliveryReceiptCCRepository
+                .getDeliveryRReceiptCCByCollectionPointId(currentCollectionPointId);
+        List<DeliveryReceiptTC> deliveryReceiptTCList = deliveryReceiptTCRepository
+                .getDeliveryReceiptTCByCollectionPointId(currentCollectionPointId);
+
+        Set<Long> packageId = new HashSet<>();
+        for(DeliveryReceiptCC de : deliveryReceiptCCList){
+            packageId.add(de.getAPackage().getId());
+        }
+        for(DeliveryReceiptTC de : deliveryReceiptTCList){
+            packageId.add(de.getAPackage().getId());
+        }
+        List<Package> packages = packageId.stream().map(id -> packageRepository.findById(id)
+                .orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"))).toList();
+        return packages;
+
     }
 
 

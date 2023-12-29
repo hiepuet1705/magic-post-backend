@@ -118,6 +118,43 @@ public class StaffTranServiceImp implements StaffTranService {
         return savedPackage;
     }
 
+    @Override
+    public List<Package> getSentPackageInATransactionPoint() {
+        Long currentTranId = getTranPointIdOfCurrentStaff();
+        List<DeliveryReceiptTC> deliveryReceiptTCs = deliveryReceiptTCRepository.
+                getSentDeliveryReceiptTCByTransactionPointId(currentTranId);
+
+
+        List<Package> packages = deliveryReceiptTCs.stream().map(deliveryReceiptTC ->
+                packageRepository.findById(deliveryReceiptTC.getAPackage().getId())
+                        .orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,
+                                "Manager not found"))).toList();
+        return packages;
+    }
+
+    @Override
+    public List<Package> getCurrentPackagesInATransactionPoint() {
+        Long currentTranId = getTranPointIdOfCurrentStaff();
+        return packageRepository.getCurrentPackageInATransactionPoint(currentTranId);
+    }
+
+    @Override
+    public List<Package> getReceivePackagesInATransactionPoint() {
+        Long currentTranId = getTranPointIdOfCurrentStaff();
+        List<DeliveryReceiptCT> deliveryReceiptCTs =
+                deliveryReceiptCTRepository.getReceivedDeliveryReceiptCTByTransactionPointId(currentTranId);
+        List<CustomerReceipt> customerReceipts = customerReceiptRepository.getCustomerReceiptByTranId(currentTranId);
+        List<Long> packageId = new ArrayList<>();
+        for(DeliveryReceiptCT de : deliveryReceiptCTs){
+            packageId.add(de.getAPackage().getId());
+        }
+        for(CustomerReceipt cr : customerReceipts){
+            packageId.add(cr.getAPackage().getId());
+        }
+        List<Package> packages = packageId.stream().map(id -> packageRepository.findById(id)
+                .orElseThrow(()->new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"))).toList();
+        return packages;
+    }
 
 
     @Override

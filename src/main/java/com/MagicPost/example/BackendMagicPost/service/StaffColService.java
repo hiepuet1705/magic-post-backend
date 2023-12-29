@@ -2,6 +2,9 @@ package com.MagicPost.example.BackendMagicPost.service;
 
 import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptCC;
 import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptCT;
+import com.MagicPost.example.BackendMagicPost.entity.Package;
+
+import java.util.List;
 
 public interface StaffColService {
     public String confirmPackageFromTransactionPoint(Long deliveryReceiptTCId);
@@ -17,6 +20,11 @@ public interface StaffColService {
     public DeliveryReceiptCT createDeliveryReceiptCT(DeliveryReceiptCT deliveryReceiptCT,
                                                      Long transactionPointReceiverId,
                                                      Long packageId);
+    List<Package> getSentPackageInACollectionPoint();
+
+    List<Package> getCurrPackageInACollectionPoint();
+
+    List<Package> getReceivePackageInACollectionPoint();
 
 
 }

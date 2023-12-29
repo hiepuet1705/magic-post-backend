@@ -14,13 +14,7 @@ public interface TranManagerService {
 
 
     Long getTranPointIdOfCurrentStaff();
-    public List<Package> getSentPackageInATransactionPoint();
 
-    public List<Package> getCurrentPackagesInATransactionPoint();
-
-
-
-    public List<Package> getReceivePackagesInATransactionPoint();
 
     String createAccountForStaffTran(StaffRegisterDto staffRegisterDto);
 

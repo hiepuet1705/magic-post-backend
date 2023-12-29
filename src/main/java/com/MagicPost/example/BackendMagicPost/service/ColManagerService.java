@@ -7,13 +7,9 @@ import com.MagicPost.example.BackendMagicPost.payload.StaffRegisterDto;
 import java.util.List;
 
 public interface ColManagerService {
-     List<Package> getSentPackageInACollectionPoint();
+
 
      List<StaffDto> getAllStaffInACollectionPoint();
-
-     List<Package> getCurrPackageInACollectionPoint();
-
-     List<Package> getReceivePackageInACollectionPoint();
 
      Long getColPointIdOfCurrentStaff();
      String createAccountForStaffCol(StaffRegisterDto staffRegisterDto);

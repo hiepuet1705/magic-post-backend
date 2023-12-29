@@ -15,7 +15,13 @@ public interface StaffTranService {
     Package createPackage(Package aPackage,Long customerId);
 
     Package createPackageStrangeCustomer(Package aPackage, CustomerRegisterDto customerRegisterDto);
+    public List<Package> getSentPackageInATransactionPoint();
 
+    public List<Package> getCurrentPackagesInATransactionPoint();
+
+
+
+    public List<Package> getReceivePackagesInATransactionPoint();
     Long getTranPointIdOfCurrentStaff();
     public CustomerReceipt createCustomerReceipt(Long packageId, CustomerReceipt customerReceiptDto);
 

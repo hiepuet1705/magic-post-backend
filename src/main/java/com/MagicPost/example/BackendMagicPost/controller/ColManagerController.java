@@ -4,6 +4,7 @@ import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.payload.StaffDto;
 import com.MagicPost.example.BackendMagicPost.payload.StaffRegisterDto;
 import com.MagicPost.example.BackendMagicPost.service.ColManagerService;
+import com.MagicPost.example.BackendMagicPost.service.StaffColService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,30 +16,32 @@ import java.util.List;
 @RequestMapping("api/manager/col")
 public class ColManagerController {
     private ColManagerService colManagerService;
+    private StaffColService staffColService;
 
-    public ColManagerController(ColManagerService colManagerService) {
+    public ColManagerController(ColManagerService colManagerService, StaffColService staffColService) {
         this.colManagerService = colManagerService;
+        this.staffColService = staffColService;
     }
 
     @GetMapping("/sent-packages")
     @PreAuthorize("hasRole('HEADCOL')")
     public ResponseEntity<List<Package>> getSentPackagesInACollectionPoint(){
 
-        List<Package> packages = colManagerService.getSentPackageInACollectionPoint();
+        List<Package> packages = staffColService.getSentPackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
     @GetMapping("/curr-packages")
     @PreAuthorize("hasRole('HEADCOL')")
     public ResponseEntity<List<Package>> getCurrPackagesInACollectionPoint(){
-        List<Package> packages = colManagerService.getCurrPackageInACollectionPoint();
+        List<Package> packages = staffColService.getCurrPackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
     @GetMapping("/rec-packages")
     @PreAuthorize("hasRole('HEADCOL')")
     public ResponseEntity<List<Package>> getReceivePackageInACollectionPoint(){
-        List<Package> packages = colManagerService.getReceivePackageInACollectionPoint();
+        List<Package> packages = staffColService.getReceivePackageInACollectionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }

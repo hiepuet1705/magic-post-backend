@@ -119,6 +119,29 @@ public class StaffTranController {
         return new ResponseEntity<>(completedDeliveryReceiptToReceivers,HttpStatus.OK);
     }
 
+    @GetMapping("/sent-packages")
+    @PreAuthorize("hasRole('OFFICERTRAN')")
+    public ResponseEntity<List<Package>> getSentPackagesInATransactionPoint(){
+
+        List<Package> packages = staffTranService.getSentPackageInATransactionPoint();
+        return new ResponseEntity<>(packages, HttpStatus.OK);
+
+    }
+    @GetMapping("/curr-packages")
+    @PreAuthorize("hasRole('OFFICERTRAN')")
+    public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(){
+        List<Package> packages = staffTranService.getCurrentPackagesInATransactionPoint();
+        return new ResponseEntity<>(packages, HttpStatus.OK);
+
+    }
+    @GetMapping("/rec-packages")
+    @PreAuthorize("hasRole('OFFICERTRAN')")
+    public ResponseEntity<List<Package>> getReceivePackagesInATransactionPoint(){
+        List<Package> packages = staffTranService.getReceivePackagesInATransactionPoint();
+        return new ResponseEntity<>(packages, HttpStatus.OK);
+
+    }
+
 
 
 
