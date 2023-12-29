@@ -19,6 +19,8 @@ public interface StaffTranService {
 
     public List<Package> getCurrentPackagesInATransactionPoint();
 
+    public List<Package> getPendingPackageInATransactionPoint();
+
 
 
     public List<Package> getReceivePackagesInATransactionPoint();

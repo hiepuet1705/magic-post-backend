@@ -163,13 +163,13 @@ public class CustomerServiceImp implements CustomerService {
 
         packageInfoDto.setFirstTranPoint(firstPointDto);
         packageInfoDto.setFirstTranPointStatus(customerReceipt.getStatus());
-        packageInfoDto.setTimeArriveFirstPoint(customerReceipt.getTime());
+        packageInfoDto.setTimeArriveFirstPoint(customerReceipt.getCreatedAt().toString());
         DeliveryReceiptTC deliveryReceiptTC = deliveryReceiptTCRepository.getDeliveryReceiptTCByPackageId(aPackage.getId());
         if(deliveryReceiptTC!= null){
             packageInfoDto.setFirstColPoint(secondPointDto);
             packageInfoDto.setFirstColPointStatus(deliveryReceiptTC.getStatus());
             if(deliveryReceiptTC.getStatus().equals(ReceiptStatus.TRANSFERED)){
-                packageInfoDto.setTimeArriveFirstColPoint(deliveryReceiptTC.getTime());
+                packageInfoDto.setTimeArriveFirstColPoint(deliveryReceiptTC.getTimeArriveNextPoint());
             }
 
         }
@@ -184,7 +184,7 @@ public class CustomerServiceImp implements CustomerService {
             if(deliveryReceiptCC!= null){
 
                 packageInfoDto.setSecondColPointStatus(deliveryReceiptCC.getStatus());
-                packageInfoDto.setTimeArriveSecondColPoint(deliveryReceiptCC.getTime());
+                packageInfoDto.setTimeArriveSecondColPoint(deliveryReceiptCC.getTimeArriveNextPoint());
 
             }
         }
@@ -192,7 +192,7 @@ public class CustomerServiceImp implements CustomerService {
             DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.getDeliveryReceiptCTByPackageId(aPackage.getId());
             if(deliveryReceiptCT!= null){
                 packageInfoDto.setSecondTranPointStatus(deliveryReceiptCT.getStatus());
-                packageInfoDto.setTimeArriveSecondTranPoint(deliveryReceiptCT.getTime());
+                packageInfoDto.setTimeArriveSecondTranPoint(deliveryReceiptCT.getTimeArriveNextPoint());
             }
         }
         return packageInfoDto;

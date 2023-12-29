@@ -139,6 +139,13 @@ public class StaffTranServiceImp implements StaffTranService {
     }
 
     @Override
+    public List<Package> getPendingPackageInATransactionPoint() {
+        Long currentTranPoint = getTranPointIdOfCurrentStaff();
+        List<Package> pendingPackages = packageRepository.getPendingPackageInATransactionPoint(currentTranPoint);
+        return pendingPackages;
+    }
+
+    @Override
     public List<Package> getReceivePackagesInATransactionPoint() {
         Long currentTranId = getTranPointIdOfCurrentStaff();
         List<DeliveryReceiptCT> deliveryReceiptCTs =
@@ -180,7 +187,6 @@ public class StaffTranServiceImp implements StaffTranService {
         customerReceipt.setAPackage(aPackage);
         customerReceipt.setName(aPackage.getName());
         customerReceipt.setDescription(aPackage.getDescription());
-        customerReceipt.setTime(new Date().toString());
         customerReceipt.setTransactionPointReceive(transactionPoint);
         customerReceipt.setSenderName(customer.getUser().getFirstName()+customer.getUser().getLastName());
         customerReceipt.setSenderPhoneNumber(customer.getUser().getPhoneNumber());
@@ -237,12 +243,9 @@ public class StaffTranServiceImp implements StaffTranService {
         Long packageId = deliveryReceiptCT.getAPackage().getId();
         Package aPackage = packageRepository.findById(packageId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
-
         deliveryReceiptCT.setStatus(ReceiptStatus.TRANSFERED);
-//        deliveryReceiptCT.setTime(new Date().toString());
-
+        deliveryReceiptCT.setTimeArriveNextPoint(new Date().toString());
         aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
-
         // Update
         aPackage.setCollectionPoint(0L);
         aPackage.setTransactionPoint(deliveryReceiptCT.getTransactionPointReceiver().getId());

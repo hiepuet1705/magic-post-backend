@@ -142,6 +142,14 @@ public class StaffTranController {
 
     }
 
+    @GetMapping("/pending-packages")
+    @PreAuthorize("hasRole('OFFICERTRAN')")
+    public ResponseEntity<List<Package>> getPendingPackagesInATransactionPoint(){
+        List<Package> packages = staffTranService.getPendingPackageInATransactionPoint();
+        return new ResponseEntity<>(packages, HttpStatus.OK);
+
+    }
+
 
 
 
