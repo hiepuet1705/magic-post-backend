@@ -14,4 +14,9 @@ public interface DeliveryReceiptToReceiverRepository extends JpaRepository<Deliv
 
     @Query("SELECT d FROM DeliveryReceiptToReceiver d WHERE d.transactionPointSender.id = :tranId AND d.status = 'TRANSFERED'")
     public List<DeliveryReceiptToReceiver> getAllCompletedDeliveryReceiptToReceiverByTranId(@Param("tranId") Long tranId);
+
+    @Query("SELECT d FROM DeliveryReceiptToReceiver d WHERE d.aPackage.id = :packageId")
+    public DeliveryReceiptToReceiver getDeliveryReceiptToReceiverByPackageId(@Param("packageId") Long packageId);
+
+
 }

@@ -28,6 +28,7 @@ public class    DeliveryReceiptTC {
 
     private String timeArriveNextPoint;
     private String receiverName="";
+    private String receiptType = "DeliveryReceiptTC";
 
 
     private String type="";

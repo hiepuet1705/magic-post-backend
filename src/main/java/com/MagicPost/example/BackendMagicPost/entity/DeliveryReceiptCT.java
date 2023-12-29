@@ -29,6 +29,7 @@ public class DeliveryReceiptCT {
     private String receiverName="";
 
     private String type="";
+    private String receiptType = "DeliveryReceiptCT";
 
     private String status = ReceiptStatus.NOT_ARRIVE;
 

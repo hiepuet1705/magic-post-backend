@@ -29,6 +29,7 @@ public class CustomerReceipt {
     private String senderPhoneNumber;
     private String name = "";
     private String description = "";
+    private String receiptType = "CustomerReceipt";
     private int weight = 0 ;
     private String receiverName="";
     private String receiverPhoneNumber="";

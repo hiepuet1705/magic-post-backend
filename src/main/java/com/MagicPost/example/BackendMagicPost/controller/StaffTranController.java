@@ -1,8 +1,6 @@
 package com.MagicPost.example.BackendMagicPost.controller;
 
-import com.MagicPost.example.BackendMagicPost.entity.CustomerReceipt;
-import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptTC;
-import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptToReceiver;
+import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.service.StaffTranService;
@@ -32,25 +30,27 @@ public class StaffTranController {
     public ResponseEntity<Package> createPackage(@RequestBody Package aPackage,
                                                  @PathVariable("customerId") Long customerId
     ) {
-        Package savedPackage = staffTranService.createPackage(aPackage,customerId);
-        return new ResponseEntity<>(savedPackage,HttpStatus.OK);
+        Package savedPackage = staffTranService.createPackage(aPackage, customerId);
+        return new ResponseEntity<>(savedPackage, HttpStatus.OK);
 
     }
+
     @PostMapping("/package/stranger")
     @PreAuthorize("hasRole('OFFICERTRAN')")
     public ResponseEntity<Package> createPackageStrangeCustomer(@RequestBody Package aPackage,
                                                                 @RequestBody CustomerRegisterDto customerRegisterDto
-                                                                ) {
-        Package savedPackage = staffTranService.createPackageStrangeCustomer(aPackage,customerRegisterDto);
-        return new ResponseEntity<>(savedPackage,HttpStatus.OK);
+    ) {
+        Package savedPackage = staffTranService.createPackageStrangeCustomer(aPackage, customerRegisterDto);
+        return new ResponseEntity<>(savedPackage, HttpStatus.OK);
 
     }
+
     @PostMapping("/customer-receipt/{packageId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
     public ResponseEntity<CustomerReceipt> createCustomerReceipt(@PathVariable("packageId") Long packageId,
                                                                  @RequestBody CustomerReceipt customerReceipt) {
-            CustomerReceipt responseCustomerReceipt =  staffTranService.createCustomerReceipt(packageId, customerReceipt);
-            return new ResponseEntity<>(responseCustomerReceipt, HttpStatus.OK);
+        CustomerReceipt responseCustomerReceipt = staffTranService.createCustomerReceipt(packageId, customerReceipt);
+        return new ResponseEntity<>(responseCustomerReceipt, HttpStatus.OK);
     }
 
     @PostMapping("/receipt-tc/{colId}/{packageId}")
@@ -59,84 +59,88 @@ public class StaffTranController {
                                                                      @PathVariable("colId") Long collectionId,
                                                                      @PathVariable("packageId") Long packageId) {
 
-        DeliveryReceiptTC responseDeliveryReceiptTC =  staffTranService.createDeliveryReceiptTC(deliveryReceiptDto,
-                collectionId,packageId);
+        DeliveryReceiptTC responseDeliveryReceiptTC = staffTranService.createDeliveryReceiptTC(deliveryReceiptDto,
+                collectionId, packageId);
         return new ResponseEntity<>(responseDeliveryReceiptTC, HttpStatus.OK);
     }
 
     @PostMapping("/receipt-to-receiver/{packageId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
     public ResponseEntity<DeliveryReceiptToReceiver> createReceiptToReceiver(@RequestBody DeliveryReceiptToReceiver deliveryReceiptToReceiver,
-                                                 @PathVariable("packageId") Long packageId
+                                                                             @PathVariable("packageId") Long packageId
     ) {
 
 
-        DeliveryReceiptToReceiver savedPackage = staffTranService.createReceiptToReceiver(deliveryReceiptToReceiver,packageId);
-        return new ResponseEntity<>(savedPackage,HttpStatus.OK);
+        DeliveryReceiptToReceiver savedPackage = staffTranService.createReceiptToReceiver(deliveryReceiptToReceiver, packageId);
+        return new ResponseEntity<>(savedPackage, HttpStatus.OK);
 
     }
 
-    @PutMapping("/receipt-ct/confirm/{receiptCTId}")
+    @PutMapping("/receipt-ct/confirm/{packageId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<String> confirmReceiptFromCollectionPoint(@PathVariable("receiptCTId") Long receiptCTId){
-        String confirm = staffTranService.confirmReceiptFromCollectionPoint(receiptCTId);
-        return new ResponseEntity<>(confirm,HttpStatus.OK);
+    public ResponseEntity<DeliveryReceiptCT> confirmReceiptFromCollectionPoint(@PathVariable("packageId") Long packageId) {
+        DeliveryReceiptCT deliveryReceiptCT = staffTranService.confirmReceiptFromCollectionPoint(packageId);
+        return new ResponseEntity<>(deliveryReceiptCT, HttpStatus.OK);
 
     }
-    @PutMapping("/receipt-receiver/confirm/{deliveryRToReceiverId}")
+
+    @PutMapping("/receipt-receiver/confirm/{packageId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<String> confirmShippedToReceiver(@PathVariable("deliveryRToReceiverId") Long deliveryRToReceiverId
-    ){
+    public ResponseEntity<String> confirmShippedToReceiver(@PathVariable("packageId") Long packageId) {
 
-        String confirm = staffTranService.confirmShippedToReceiver(deliveryRToReceiverId);
-        return new ResponseEntity<>(confirm,HttpStatus.OK);
+        String confirm = staffTranService.confirmShippedToReceiver(packageId);
+        return new ResponseEntity<>(confirm, HttpStatus.OK);
 
     }
+
     @PutMapping("/receipt-receiver/confirm/unsuccessful/{deliveryRToReceiverId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
     public ResponseEntity<String> confirmShippedUncompletedToReceiver(@PathVariable("deliveryRToReceiverId") Long deliveryRToReceiverId
-    ){
+    ) {
 
-        String confirm = staffTranService.confirmReceiptFromCollectionPoint(deliveryRToReceiverId);
-        return new ResponseEntity<>(confirm,HttpStatus.OK);
+        String confirm = staffTranService.confirmShippedUncompletedToReceiver(deliveryRToReceiverId);
+        return new ResponseEntity<>(confirm, HttpStatus.OK);
 
     }
+
     @GetMapping("/tran-id")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<Long> getTranIdOfCurrentUser(){
+    public ResponseEntity<Long> getTranIdOfCurrentUser() {
         Long tranId = staffTranService.getTranPointIdOfCurrentStaff();
-        return new ResponseEntity<>(tranId,HttpStatus.OK);
+        return new ResponseEntity<>(tranId, HttpStatus.OK);
     }
 
 
     @GetMapping("/completed-packages/{tranId}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<List<DeliveryReceiptToReceiver>> getAllCompletedPackage(@PathVariable("tranId") Long tranId){
+    public ResponseEntity<List<DeliveryReceiptToReceiver>> getAllCompletedPackage(@PathVariable("tranId") Long tranId) {
 
         List<DeliveryReceiptToReceiver> completedDeliveryReceiptToReceivers =
                 staffTranService.getAllCompletedPackage(tranId);
 
-        return new ResponseEntity<>(completedDeliveryReceiptToReceivers,HttpStatus.OK);
+        return new ResponseEntity<>(completedDeliveryReceiptToReceivers, HttpStatus.OK);
     }
 
     @GetMapping("/sent-packages")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<List<Package>> getSentPackagesInATransactionPoint(){
+    public ResponseEntity<List<Package>> getSentPackagesInATransactionPoint() {
 
         List<Package> packages = staffTranService.getSentPackageInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
+
     @GetMapping("/curr-packages")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint(){
+    public ResponseEntity<List<Package>> getCurrPackagesInATransactionPoint() {
         List<Package> packages = staffTranService.getCurrentPackagesInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
+
     @GetMapping("/rec-packages")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<List<Package>> getReceivePackagesInATransactionPoint(){
+    public ResponseEntity<List<Package>> getReceivePackagesInATransactionPoint() {
         List<Package> packages = staffTranService.getReceivePackagesInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
@@ -144,14 +148,11 @@ public class StaffTranController {
 
     @GetMapping("/pending-packages")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<List<Package>> getPendingPackagesInATransactionPoint(){
+    public ResponseEntity<List<Package>> getPendingPackagesInATransactionPoint() {
         List<Package> packages = staffTranService.getPendingPackageInATransactionPoint();
         return new ResponseEntity<>(packages, HttpStatus.OK);
 
     }
-
-
-
 
 
 }

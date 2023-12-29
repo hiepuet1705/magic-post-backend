@@ -7,11 +7,11 @@ import com.MagicPost.example.BackendMagicPost.entity.Package;
 import java.util.List;
 
 public interface StaffColService {
-    public String confirmPackageFromTransactionPoint(Long deliveryReceiptTCId);
+    public String confirmPackageFromTransactionPoint(Long packageId);
 
     Long getColPointIdOfCurrentStaff();
 
-    public String confirmPackageFromOtherCollectionPoint(Long deliveryReceiptCCId);
+    public String confirmPackageFromOtherCollectionPoint(Long packageId);
 
     public DeliveryReceiptCC createDeliveryReceiptCC(DeliveryReceiptCC deliveryReceiptCC,
                                                      Long collectionPointReceiverId,

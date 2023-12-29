@@ -20,22 +20,22 @@ public class StaffColController {
     public StaffColController(StaffColService staffColService) {
         this.staffColService = staffColService;
     }
-    @PutMapping("/receipt-tc/confirm/{receiptTCId}")
+    @PutMapping("/receipt-tc/confirm/{packageId}")
     @PreAuthorize("hasRole('OFFICERCOL')")
-    public ResponseEntity<String> confirmReceiptFromTransactionPoint(@PathVariable("receiptTCId") Long receiptTCId
+    public ResponseEntity<String> confirmReceiptFromTransactionPoint(@PathVariable("packageId") Long packageId
     ){
 
-        String confirm = staffColService.confirmPackageFromTransactionPoint(receiptTCId);
+        String confirm = staffColService.confirmPackageFromTransactionPoint(packageId);
         return new ResponseEntity<>(confirm, HttpStatus.OK);
 
     }
-    @PutMapping("/receipt-cc/confirm/{receiptCCId}")
+    @PutMapping("/receipt-cc/confirm/{packageId}")
     @PreAuthorize("hasRole('OFFICERCOL')")
-    public ResponseEntity<String> confirmReceiptFromOtherCollectionPoint(@PathVariable("receiptCCId")
-                                                                             Long receiptCCId
+    public ResponseEntity<String> confirmReceiptFromOtherCollectionPoint(@PathVariable("packageId")
+                                                                             Long packageId
     ){
 
-        String confirm = staffColService.confirmPackageFromOtherCollectionPoint(receiptCCId);
+        String confirm = staffColService.confirmPackageFromOtherCollectionPoint(packageId);
         return new ResponseEntity<>(confirm, HttpStatus.OK);
 
     }

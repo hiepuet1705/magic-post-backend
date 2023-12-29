@@ -23,4 +23,5 @@ public interface DeliveryReceiptTCRepository extends JpaRepository<DeliveryRecei
 
     @Query("Select d from DeliveryReceiptTC d where d.aPackage.id =:packageId")
     public DeliveryReceiptTC getDeliveryReceiptTCByPackageId(@Param("packageId") Long packageId);
+
 }

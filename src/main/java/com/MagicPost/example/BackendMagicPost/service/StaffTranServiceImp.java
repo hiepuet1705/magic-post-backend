@@ -231,16 +231,13 @@ public class StaffTranServiceImp implements StaffTranService {
     }
 
     @Override
-    public String confirmReceiptFromCollectionPoint(Long deliveryCTId) {
-
-        DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.findById(deliveryCTId)
-                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"ReceiptCT not found"));
+    public DeliveryReceiptCT confirmReceiptFromCollectionPoint(Long packageId) {
+        DeliveryReceiptCT deliveryReceiptCT = deliveryReceiptCTRepository.getDeliveryReceiptCTByPackageId(packageId);
         if(!deliveryReceiptCT.getTransactionPointReceiver().getId()
                 .equals(getTranPointIdOfCurrentStaff())){
             throw  new CustomApiException(HttpStatus.CONFLICT,"Conflict between staff and tranPoint");
 
         }
-        Long packageId = deliveryReceiptCT.getAPackage().getId();
         Package aPackage = packageRepository.findById(packageId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
         deliveryReceiptCT.setStatus(ReceiptStatus.TRANSFERED);
@@ -252,9 +249,9 @@ public class StaffTranServiceImp implements StaffTranService {
 
         // save
         packageRepository.save(aPackage);
-        deliveryReceiptCTRepository.save(deliveryReceiptCT);
+        DeliveryReceiptCT savedDeliveryReceiptCT = deliveryReceiptCTRepository.save(deliveryReceiptCT);
 
-        return "Confirm Receipt From Collection Point with PackageId = " + packageId ;
+        return savedDeliveryReceiptCT;
 
 
     }
@@ -285,9 +282,9 @@ public class StaffTranServiceImp implements StaffTranService {
     }
 
     @Override
-    public String confirmShippedToReceiver(Long deliveryRToReceiverId) {
-        DeliveryReceiptToReceiver deliveryReceiptToReceiver = deliveryReceiptToReceiverRepository.findById(deliveryRToReceiverId)
-                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"receipt to receiver not found"));
+    public String confirmShippedToReceiver(Long packageId) {
+        DeliveryReceiptToReceiver deliveryReceiptToReceiver = deliveryReceiptToReceiverRepository.
+                getDeliveryReceiptToReceiverByPackageId(packageId);
         deliveryReceiptToReceiver.setStatus(ReceiptStatus.TRANSFERED);
         // Update Status Of Package
         Package aPackage =  deliveryReceiptToReceiver.getAPackage();

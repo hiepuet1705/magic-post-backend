@@ -61,15 +61,12 @@ public class StaffColServiceImp implements StaffColService {
 
 
     @Override
-    public String confirmPackageFromTransactionPoint(Long deliveryReceiptTCId) {
+    public String confirmPackageFromTransactionPoint(Long packageId) {
 
-
-        DeliveryReceiptTC deliveryReceiptTC = deliveryReceiptTCRepository.findById(deliveryReceiptTCId)
-                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Delivery Receipt not found"));
+        DeliveryReceiptTC deliveryReceiptTC = deliveryReceiptTCRepository.getDeliveryReceiptTCByPackageId(packageId);
         if(!getColPointIdOfCurrentStaff().equals(deliveryReceiptTC.getCollectionPointReceiver().getId())){
             throw new CustomApiException(HttpStatus.CONFLICT,"Conflict between staff and collection point");
         }
-        Long packageId = deliveryReceiptTC.getAPackage().getId();
         Package aPackage = packageRepository.findById(packageId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
         //Update status of receipt and Package
@@ -90,13 +87,10 @@ public class StaffColServiceImp implements StaffColService {
 
 
     @Override
-    public String confirmPackageFromOtherCollectionPoint(Long deliveryReceiptCCId) {
-        DeliveryReceiptCC deliveryReceiptCC = deliveryReceiptCCRepository.findById(deliveryReceiptCCId)
-                .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Delivery Receipt not found"));
-        Long packageId = deliveryReceiptCC.getAPackage().getId();
+    public String confirmPackageFromOtherCollectionPoint(Long packageId) {
+        DeliveryReceiptCC deliveryReceiptCC = deliveryReceiptCCRepository.getDeliveryReceiptCCByPackageId(packageId);
         Package aPackage = packageRepository.findById(packageId)
                 .orElseThrow(()-> new CustomApiException(HttpStatus.BAD_REQUEST,"Package not found"));
-
         if(!deliveryReceiptCC.getCollectionPointReceiver().getId().equals(getColPointIdOfCurrentStaff())){
             throw new CustomApiException(HttpStatus.CONFLICT,"Conflict between staff and collection point");
         }

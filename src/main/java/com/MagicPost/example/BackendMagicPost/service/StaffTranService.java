@@ -1,8 +1,6 @@
 package com.MagicPost.example.BackendMagicPost.service;
 
-import com.MagicPost.example.BackendMagicPost.entity.CustomerReceipt;
-import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptTC;
-import com.MagicPost.example.BackendMagicPost.entity.DeliveryReceiptToReceiver;
+import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
 import com.itextpdf.text.DocumentException;
@@ -37,8 +35,8 @@ public interface StaffTranService {
 
     public DeliveryReceiptToReceiver createReceiptToReceiver(DeliveryReceiptToReceiver deliveryReceiptToReceiver,
                                                              Long packageId);
-    public String confirmReceiptFromCollectionPoint(Long deliveryCTId);
-    public String confirmShippedToReceiver(Long deliveryRToReceiverId);
+    public DeliveryReceiptCT confirmReceiptFromCollectionPoint(Long packageId);
+    public String confirmShippedToReceiver(Long packageId);
     public String confirmShippedUncompletedToReceiver(Long deliveryRToReceiverId);
 
     public List<DeliveryReceiptToReceiver> getAllCompletedPackage(Long tranId);
