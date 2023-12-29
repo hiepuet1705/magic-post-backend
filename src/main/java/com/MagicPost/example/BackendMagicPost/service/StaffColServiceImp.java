@@ -123,6 +123,7 @@ public class StaffColServiceImp implements StaffColService {
 
         // Update package
         aPackage.setStatus(PackageStatus.TRANSFERING);
+        aPackage.setSentFrom("Collection Point");
 
         //xac nhan thi moi sua
         aPackage.setCollectionPoint(collectionPointReceiverId);
@@ -153,8 +154,9 @@ public class StaffColServiceImp implements StaffColService {
 
         // Update package
         aPackage.setStatus(PackageStatus.TRANSFERING);
+        aPackage.setSentFrom("Collection Point");
 
-        //xac nhan thi moi sua
+        //Khi tạo => transfering và đang trên đường đến cái nào k null
         aPackage.setCollectionPoint(0L);
         aPackage.setTransactionPoint(transactionPointReceiverId);
 

@@ -3,6 +3,7 @@ package com.MagicPost.example.BackendMagicPost.service;
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
+import com.MagicPost.example.BackendMagicPost.payload.PackageAnCustomerRegisterDto;
 import com.itextpdf.text.DocumentException;
 import org.springframework.core.io.Resource;
 
@@ -10,9 +11,9 @@ import java.util.List;
 
 public interface StaffTranService {
 
-    Package createPackage(Package aPackage,Long customerId);
+    Package createPackage(Package aPackage,String phoneNumber);
 
-    Package createPackageStrangeCustomer(Package aPackage, CustomerRegisterDto customerRegisterDto);
+    Package createPackageStrangeCustomer(PackageAnCustomerRegisterDto packageAnCustomerRegisterDto);
     public List<Package> getSentPackageInATransactionPoint();
 
     public List<Package> getCurrentPackagesInATransactionPoint();

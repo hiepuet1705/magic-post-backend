@@ -5,6 +5,7 @@ import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.exception.CustomApiException;
 import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
+import com.MagicPost.example.BackendMagicPost.payload.PackageAnCustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.payload.PointDto;
 import com.MagicPost.example.BackendMagicPost.repository.*;
 import com.MagicPost.example.BackendMagicPost.utils.PackageStatus;
@@ -42,6 +43,8 @@ public class StaffTranServiceImp implements StaffTranService {
 
     private DeliveryReceiptToReceiverRepository deliveryReceiptToReceiverRepository;
 
+    private UserRepository userRepository;
+
     private UserService userService;
 
     private AuthService authService;
@@ -58,6 +61,7 @@ public class StaffTranServiceImp implements StaffTranService {
                                DeliveryReceiptCTRepository deliveryReceiptCTRepository,
                                DeliveryReceiptToReceiverRepository deliveryReceiptToReceiverRepository,
                                PackageRepository packageRepository,
+                               UserRepository userRepository,
                                UserService userService,
                                PasswordEncoder passwordEncoder,
                                AuthService authService
@@ -74,24 +78,29 @@ public class StaffTranServiceImp implements StaffTranService {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.authService = authService;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Package createPackage(Package aPackage,Long customerId) {
+    public Package createPackage(Package aPackage,String phoneNumber) {
+        if(!userRepository.existsByPhoneNumber(phoneNumber)){
+            throw new CustomApiException(HttpStatus.BAD_REQUEST,"phone number does not exist");
+        }
+        User user = userRepository.getUserByPhoneNumber(phoneNumber);
+
+        Customer customer = customerRepository.getCustomerByUserId(user.getId());
+        if(customer==null){
+            throw new CustomApiException(HttpStatus.BAD_REQUEST,"Customer does not exist");
+        }
         //
         Long transactionPointId = getTranPointIdOfCurrentStaff();
         TransactionPoint transactionPoint = transactionPointRepository.findById(transactionPointId).
                 orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction not found"));
 
-        Customer customer = customerRepository.findById(customerId).
-                orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Customer not found"));
+
         aPackage.setSender(customer);
         aPackage.setTransactionPoint(transactionPointId);
         aPackage.setCollectionPoint(0L);
-
-
-
-
 
         aPackage.setStatus(PackageStatus.AT_TRANSACTION_POINT);
         String pkKey =  passwordEncoder.encode
@@ -102,7 +111,18 @@ public class StaffTranServiceImp implements StaffTranService {
     }
 
     @Override
-    public Package createPackageStrangeCustomer(Package aPackage, CustomerRegisterDto customerRegisterDto) {
+    public Package createPackageStrangeCustomer(PackageAnCustomerRegisterDto packageAnCustomerRegisterDto) {
+        Package aPackage = new Package();
+        aPackage.setName(packageAnCustomerRegisterDto.getName());
+        aPackage.setWeight(packageAnCustomerRegisterDto.getWeight());
+        aPackage.setType(packageAnCustomerRegisterDto.getType());
+        aPackage.setReceiverDistrict(packageAnCustomerRegisterDto.getReceiverDistrict());
+        aPackage.setReceiverProvince(packageAnCustomerRegisterDto.getReceiverProvince());
+        aPackage.setDescription(packageAnCustomerRegisterDto.getDescription());
+        aPackage.setReceiverFirstName(packageAnCustomerRegisterDto.getReceiverFirstName());
+        aPackage.setReceiverLastName(packageAnCustomerRegisterDto.getReceiverLastName());
+        aPackage.setReceiverPhoneNumber(packageAnCustomerRegisterDto.getReceiverPhoneNumber());
+        CustomerRegisterDto customerRegisterDto = packageAnCustomerRegisterDto.getCustomerRegisterDto();
         Long transactionPointId = getTranPointIdOfCurrentStaff();
         TransactionPoint transactionPoint = transactionPointRepository.findById(transactionPointId).
                 orElseThrow(() -> new CustomApiException(HttpStatus.BAD_REQUEST,"Transaction not found"));
@@ -212,7 +232,7 @@ public class StaffTranServiceImp implements StaffTranService {
 
         // Update package
         aPackage.setStatus(PackageStatus.TRANSFERING);
-
+        aPackage.setSentFrom("Transaction Point");
         //
         aPackage.setCollectionPoint(collectionPointId);
         aPackage.setTransactionPoint(0L);

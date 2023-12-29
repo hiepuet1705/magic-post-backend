@@ -33,6 +33,7 @@ public class Package {
     private String receiverProvince;
     private String receiverDistrict;
     private String receiverPhoneNumber;
+    private String sentFrom;
 
     @Column(unique = true)
     private String hashKey="";

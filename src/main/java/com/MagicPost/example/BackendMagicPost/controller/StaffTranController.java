@@ -3,6 +3,7 @@ package com.MagicPost.example.BackendMagicPost.controller;
 import com.MagicPost.example.BackendMagicPost.entity.*;
 import com.MagicPost.example.BackendMagicPost.entity.Package;
 import com.MagicPost.example.BackendMagicPost.payload.CustomerRegisterDto;
+import com.MagicPost.example.BackendMagicPost.payload.PackageAnCustomerRegisterDto;
 import com.MagicPost.example.BackendMagicPost.service.StaffTranService;
 import com.itextpdf.text.DocumentException;
 import org.springframework.core.io.ByteArrayResource;
@@ -25,22 +26,20 @@ public class StaffTranController {
         this.staffTranService = staffTranService;
     }
 
-    @PostMapping("/package/{customerId}")
+    @PostMapping("/package/{phoneNumber}")
     @PreAuthorize("hasRole('OFFICERTRAN')")
     public ResponseEntity<Package> createPackage(@RequestBody Package aPackage,
-                                                 @PathVariable("customerId") Long customerId
+                                                 @PathVariable("phoneNumber") String phoneNumber
     ) {
-        Package savedPackage = staffTranService.createPackage(aPackage, customerId);
+        Package savedPackage = staffTranService.createPackage(aPackage, phoneNumber);
         return new ResponseEntity<>(savedPackage, HttpStatus.OK);
 
     }
 
     @PostMapping("/package/stranger")
     @PreAuthorize("hasRole('OFFICERTRAN')")
-    public ResponseEntity<Package> createPackageStrangeCustomer(@RequestBody Package aPackage,
-                                                                @RequestBody CustomerRegisterDto customerRegisterDto
-    ) {
-        Package savedPackage = staffTranService.createPackageStrangeCustomer(aPackage, customerRegisterDto);
+    public ResponseEntity<Package> createPackageStrangeCustomer(@RequestBody PackageAnCustomerRegisterDto packageAnCustomerRegisterDto) {
+        Package savedPackage = staffTranService.createPackageStrangeCustomer(packageAnCustomerRegisterDto);
         return new ResponseEntity<>(savedPackage, HttpStatus.OK);
 
     }
