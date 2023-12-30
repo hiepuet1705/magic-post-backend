@@ -26,7 +26,7 @@ public class BossController {
     }
     @GetMapping("/col-points")
     @PreAuthorize("hasRole('BOSS')")
-    public ResponseEntity<List<PointDto>>  getAllCollectionPoints(){
+    public ResponseEntity<List<PointDto>> getAllCollectionPoints(){
         List<PointDto> collectionPoints = bossService.getAllCollectionPoints();
         return new ResponseEntity<>(collectionPoints, HttpStatus.OK);
     }

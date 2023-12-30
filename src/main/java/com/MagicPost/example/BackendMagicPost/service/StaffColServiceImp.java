@@ -155,6 +155,7 @@ public class StaffColServiceImp implements StaffColService {
         // Update package
         aPackage.setStatus(PackageStatus.TRANSFERING);
         aPackage.setSentFrom("Collection Point");
+        System.out.println(collectionPointSender.getDistrict());
 
         //Khi tạo => transfering và đang trên đường đến cái nào k null
         aPackage.setCollectionPoint(0L);
@@ -168,7 +169,6 @@ public class StaffColServiceImp implements StaffColService {
         deliveryReceiptCT.setTransactionPointReceiver(transactionPointReceiver);
         deliveryReceiptCT.setReceiverName(aPackage.getReceiverFirstName() + aPackage.getReceiverLastName());
         deliveryReceiptCT.setAPackage(aPackage);
-
         deliveryReceiptCT.setStatus(ReceiptStatus.TRANSFERING);
         DeliveryReceiptCT savedDeliveryReceiptCT =  deliveryReceiptCTRepository.save(deliveryReceiptCT);
         return savedDeliveryReceiptCT;

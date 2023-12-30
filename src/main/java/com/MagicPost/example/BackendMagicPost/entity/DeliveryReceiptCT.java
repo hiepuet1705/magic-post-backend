@@ -50,17 +50,18 @@ public class DeliveryReceiptCT {
     private String packageName;
 
 
-    @ManyToOne
-    @JsonBackReference("col_sent")
+    @ManyToOne()
     @JoinColumn(name = "collection_id")
+    @JsonBackReference("collection_sender_ref")
     private CollectionPoint collectionPointSender;
 
-    @ManyToOne
-    @JsonBackReference("tran_receive")
+    @ManyToOne()
     @JoinColumn(name = "transaction_id")
+    @JsonBackReference("transaction_ref")
     private TransactionPoint transactionPointReceiver;
 
-    @OneToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+
     @JoinColumn(name = "package_id")
     private Package aPackage;
 

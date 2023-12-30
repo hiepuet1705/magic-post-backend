@@ -34,5 +34,4 @@ public class CollectionPoint {
     private Set<StaffCollection> staffCollections = new HashSet<>();
 
 
-
 }
